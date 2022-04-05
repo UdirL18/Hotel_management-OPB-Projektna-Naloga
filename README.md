@@ -1,1 +1,2 @@
-# OPB-projektna-naloga
+# LibMusic
+## OPB-projektna-naloga
