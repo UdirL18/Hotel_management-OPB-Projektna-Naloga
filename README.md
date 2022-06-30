@@ -1,3 +1,3 @@
 # LibMusic
 ## OPB-projektna-naloga
-![ERdiagram.png](https://github.com/UdirL18/LibMusic-OPB-Projektna-Naloga/blob/main/ERdiagram.png)
+![ERdiagram.png](https://github.com/UdirL18/LibMusic-OPB-Projektna-Naloga/blob/main/OPB_Hotel.png)
