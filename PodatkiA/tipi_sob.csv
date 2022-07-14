@@ -1,0 +1,8 @@
+tip_sobe_id, tip_sobe_ime, tip_sobe_opis, cena_sobe, zivali, kadilci, '1 zakonska postelja', 'soba s pogledom na mesto',191.22,0,0
+tip_sobe_id, tip_sobe_ime, tip_sobe_opis, cena_sobe, zivali, kadilci, '2 zakonski postelji', 'soba s pogledom na morje',175.06,1,0
+tip_sobe_id, tip_sobe_ime, tip_sobe_opis, cena_sobe, zivali, kadilci, '1 enojna postelja', 'soba s pogledom na mesto',131.49,0,0
+tip_sobe_id, tip_sobe_ime, tip_sobe_opis, cena_sobe, zivali, kadilci, '2 enojni postelji', 'soba s pogledom na mesto',116.57,1,1
+tip_sobe_id, tip_sobe_ime, tip_sobe_opis, cena_sobe, zivali, kadilci, '1 zakonska postelja', 'soba s pogledom na morje',188.91,1,0
+tip_sobe_id, tip_sobe_ime, tip_sobe_opis, cena_sobe, zivali, kadilci, '2 zakonski postelji', 'soba s pogledom na morje',128.5,1,1
+tip_sobe_id, tip_sobe_ime, tip_sobe_opis, cena_sobe, zivali, kadilci, '1 enojna postelja', 'soba s pogledom na mesto',165.75,0,1
+tip_sobe_id, tip_sobe_ime, tip_sobe_opis, cena_sobe, zivali, kadilci, '2 enojni postelji', 'soba s pogledom na morje',134.88,1,1
