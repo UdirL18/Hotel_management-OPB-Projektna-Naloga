@@ -67,7 +67,6 @@ CREATE TABLE rezervacije
   st_rezerviranih_sob INT NOT NULL,
   datum_check_in DATETIME NOT NULL,
   datum_check_out DATETIME NOT NULL,
-  dnevi_rezervacije varchar(10) NOT NULL,
   zaposleni_id INT REFERENCES zaposleni(zaposleni_id) NOT NULL, 
   gostje_id INT REFERENCES gostje(gostje_id) NOT NULL, 
   hotel_id INT REFERENCES hotel_podatki(hotel_id) NOT NULL
