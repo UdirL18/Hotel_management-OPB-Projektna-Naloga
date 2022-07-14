@@ -1,0 +1,123 @@
+% setdefault('naslov', 'REGISTRACIJA')
+% rebase('osnova.html')
+
+<form action="{{url('registracija_get')}}" method="post" autocomplete="off"> 
+    <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="id">Emšo</label>
+          <input id="id" name="id" type="text" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="ime">Ime</label>
+          <input id="ime" name="ime" type="text" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="priimek">Priimek</label>
+          <input id="priimek" name="priimek" type="text" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
+        </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="priimek">Ulica</label>
+        <input id="priimek" name="ulica" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="hisna_stevilka">Hišna številka</label>
+        <input id="hisna_stevilka" name="hisna_stevilka" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="text" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="telefon">Telefonska številka</label>
+          <input id="telefon" name="telefon" type="text" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="posta_id">Poštna številka</label>
+          <input id="posta_id" name="posta_id" type="text" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="uporabnisko_ime">Uporabniško ime</label>
+          <input id="uporabnisko_ime" name="uporabnisko_ime" type="text" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
+        </div>
+      </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="geslo">Geslo</label>
+        <input id="geslo" name="geslo" type="password" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="geslo2">Ponovno geslo</label>
+        <input id="geslo2" name="geslo2" type="password" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+
+      </div>
+    </div>
+
+
+
+<div>
+  <input type = "radio" name = "tip" value = "agent"> Gost
+  <input type = "radio" name = "tip" value = "komitent"> Zaposleni
+</div>
+
+    <div class="form-row col">
+      <button class="btn btn-primary" type="submit">
+        Registriraj se!
+      </button>
+    </div>
+  
+  </form>
+
+  <div class="form-row d-flex justify-content-start">
+    <p>Že imate račun? <a href="{{url('prijava_get')}}">Prijava</a>
+</div>
