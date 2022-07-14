@@ -1,4 +1,4 @@
-id,ime,priimek,telefonska_stevilka,email,kreditna_kartica,naslov_id
+gostje_id,ime,priimek,telefonska_stevilka,email,kreditna_kartica,naslov_id
 1,Carlotta,Stewart,242-01-6772,cstewart0@jalbum.net,5108756007801860,19
 2,Wayland,Denisyuk,240-68-1735,wdenisyuk1@merriam-webster.com,5002356022529484,20
 3,Pattie,Daverin,325-85-2362,pdaverin2@time.com,,2
