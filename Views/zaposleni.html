@@ -1,0 +1,29 @@
+% setdefault('napaka', '')
+% rebase('base.html', napaka=napaka, naslov='Zaposleni')
+
+<table id="izpis" class="table table-striped"> <a class="btn btn-primary" href="{{url('dodaj_zaposlenega')}}"role="button">Dodaj zaposlenega</a>
+  <tr>
+    <th>Id</th>
+    <th>Ime</th>
+    <th>Priimek</th>
+    <th>Telefonska številka</th>
+    <th>E-mail</th>
+    <th>Naziv</th>
+    <th>Naslov</th>
+    <th>Hotel</th>
+    <th>Oddelek</th>
+  </tr>
+  %for (zaposleni_id,ime,priimek,naziv,telefonska_stevilka,email,oddelek_id,naslov_id,hotel_id) in zaposleni:
+  <tr>
+    <th>{{zaposleni_id}}</th>
+    <td>{{ime}}</td>
+    <td>{{priimek}}</td>
+    <td>{{telefonska_stevilka}}</td>
+    <td>{{email}}</td>
+    <td>{{naziv}}</td>
+    <td>{{naslov_id}}</td>
+    <td>{{hotel_id}}</td>
+    <td>{{oddelek_id}}</td>
+  </tr>
+  %end
+</table>

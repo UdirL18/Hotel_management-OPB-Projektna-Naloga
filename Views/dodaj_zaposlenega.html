@@ -1,0 +1,93 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Dodaj zaposlenega')
+% rebase('base.html', napaka=napaka, naslov=naslov)
+
+<form action="{{url('dodaj_zaposlenega')}}" method="post" autocomplete="off">
+  <div>
+    <input type = "radio" name = "tip" value = "zaposleni"> Vpisujem komitenta
+  </div>
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="id">Id</label>
+        <input id="zaposleni_id" name="zaposelni_id" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="ime">Ime</label>
+        <input id="ime" name="ime" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="priimek">Priimek</label>
+        <input id="priimek" name="priimek" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="naziv">Naziv</label>
+      <input id="naziv" name="naziv" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="telefonska_stevilka">Telefonska številka</label>
+      <input id="telefonska_stevilka" name="telefonska_stevilka" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="oddelek_id">Oddelek</label>
+        <input id="oddelek_id" name="oddelek_id" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="naslov_id">Naslov</label>
+        <input id="naslov_id" name="naslov_id" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="hotel_id">Hotel</label>
+        <input id="hotel_id" name="hotel_id" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    
+    </div>
+    <p><input type="submit" value="Dodaj"></p>
+  </form>
