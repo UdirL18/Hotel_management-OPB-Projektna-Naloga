@@ -50,7 +50,7 @@ def zaposleni():
     return template('zaposleni.html', zaposleni=zaposleni)
 
 @get('/dodaj_zaposlenega')
-def dodaj_agenta():
+def dodaj_zaposlenega():
     return template('dodaj_zaposlenega.html', zaposleni_id='', ime='', priimek='', naziv='', telefonska_stevilka='', email='', oddelek_id='', naslov_id='', hotel_id='', username='', password='', napaka=None)
 
 @post('/dodaj_zaposlenega')
