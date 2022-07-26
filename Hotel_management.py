@@ -50,7 +50,7 @@ def zaposleni():
     return template('zaposleni.html', zaposleni=zaposleni)
 
 @get('/dodaj_zaposlenega')
-def dodaj_zaposlenega():
+def dodaj_agenta():
     return template('dodaj_zaposlenega.html', zaposleni_id='', ime='', priimek='', naziv='', telefonska_stevilka='', email='', oddelek_id='', naslov_id='', hotel_id='', username='', password='', napaka=None)
 
 @post('/dodaj_zaposlenega')
@@ -97,8 +97,60 @@ def dodaj_zaposlenega_post():
 @get('/hotelska_veriga')
 def hotelska_veriga():
     cur = baza.cursor()
-    hotelska_veriga = cur.execute("SELECT ime_hotelske_verige, naslov_glavne_pisarne FROM hotelska_veriga")
+    hotelska_veriga = cur.execute("SELECT ime_hotelske_verige, naslov_glavne_pisarne, email_hotelske_verige, spletna_stran FROM hotelska_veriga")
     return template('hotelska_veriga.html', hotelska_veriga=hotelska_veriga)
+
+### HOTEL
+
+@get('/hotel')
+def hotel():
+    cur = baza.cursor()
+    hotel = cur.execute("""SELECT ime_hotela, naslov.mesto, naslov.posta, naslov.drzava, telefonska_stevilka, email, hotelska_veriga.ime_hotelske_verige FROM hotel_podatki
+    JOIN naslov ON hotel_podatki.naslov_id=naslov.naslov_id
+    JOIN hotelska_veriga ON hotel_podatki.hotelska_veriga_id=hotelska_veriga.hotelska_veriga_id
+    ORDER BY hotel_podatki.ime_hotela""")
+    return template('hotel.html', hotel=hotel)
+
+### GOST
+
+@get('/gostje')
+def gostje():
+    cur = baza.cursor()
+    gostje = cur.execute("""SELECT ime,priimek,telefonska_stevilka,email,naslov.mesto, naslov.posta, naslov.drzava FROM gostje
+    JOIN naslov ON gostje.naslov_id=naslov.naslov_id
+    ORDER BY gostje.priimek""")
+    return template('gostje.html', gostje=gostje)
+
+@get('/gostje/dodaj')
+def naslov():
+    cur = baza.cursor()
+    naslovi = cur.execute("SELECT mesto,posta,drzava from naslov")
+
+def dodaj_gosta_get():
+    naslovi = cur.execute("SELECT mesto,posta,drzava FROM naslov")
+    return template('gost_edit.html', naslovi=naslovi)
+
+@post('/gostje/dodaj') 
+def dodaj_gosta_post():
+    ime = request.forms.ime
+    priimek = request.forms.priimek
+    telefonska_stevilka = request.forms.telefonska_stevilka
+    email = request.forms.email
+    naslov_id = request.forms.naslov_id
+    cur = baza.cursor()
+    cur.execute("INSERT INTO gostje (ime,priimek,telefonska_stevilka,email,naslov_id) VALUES (?, ?, ?, ?, ?)", 
+         (ime,priimek,telefonska_stevilka,email,naslov_id))
+    redirect('/gostje')
+
+### SOBA
+
+@get('/sobe')
+def sobe():
+    cur = baza.cursor()
+    sobe = cur.execute("""SELECT stevilka_sobe,tip_sobe_id,hotel_podatki.ime_hotela FROM sobe
+    JOIN hotel_podatki ON sobe.hotel_id=hotel_podatki.ime_hotela""")
+    return template('sobe.html', sobe=sobe)
+
 
 ### REGISTRACIJA, PRIJAVA
 
