@@ -1,0 +1,22 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Seznam gostov')
+% rebase('base.html', napaka=napaka, izbrani_zavihek='gostje')
+
+% include('orodna_vrstica.html', povezava='dodaj_gosta_post', napis="Dodaj gosta")
+
+<table id="izpis" class="table table-striped">
+    <tr>
+      <th>Ime in priimek</th>
+      <th>Naslov</th>
+      <th>Telefonska številka</th>
+      <th>E-mail</th>
+    </tr>
+    %for (ime,priimek,telefonska_stevilka,email,mesto,posta,drzava) in gostje:
+    <tr>
+      <td>{{ime}} {{priimek}}</td>
+      <td>{{mesto}} {{posta}} {{drzava}}</td>
+      <td>{{telefonska_stevilka}}</td>
+      <td>{{email}}</td>
+    </tr>
+    %end
+  </table>

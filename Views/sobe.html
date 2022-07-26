@@ -1,0 +1,18 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Seznam rezerviranih sob')
+% rebase('base.html', napaka=napaka, izbrani_zavihek='sobe')
+
+<table id="izpis" class="table table-striped">
+    <tr>
+      <th>Ime</th>
+      <th>Naslov</th>
+      <th>Telefonska številka</th>
+    </tr>
+    %for (stevilka_sobe,tip_sobe_id,ime_hotela) in sobe:
+    <tr>
+      <td>{{ime_hotela}}</td>
+      <td>{{stevilka_sobe}}</td>
+      <td>{{tip_sobe_id}}</td>
+    </tr>
+    %end
+</table>

@@ -1,15 +1,20 @@
 % setdefault('napaka', '')
-% rebase('base.html', napaka=napaka, naslov='Hotelska veriga')
+% setdefault('naslov', 'Seznam hotelskih verig')
+% rebase('base.html', napaka=napaka, izbrani_zavihek='hotelska_veriga')
 
 <table id="izpis" class="table table-striped">
   <tr>
     <th>Ime</th>
-    <th>Naslov</th>
+    <th>Naslov glavne pisarne</th>
+    <th>E-mail</th>
+    <th>Spletna stran</th>
   </tr>
-  %for (ime_hotelske_verige, naslov_glavne_pisarne) in hotelska_veriga:
+  %for (ime_hotelske_verige, naslov_glavne_pisarne, email_hotelske_verige, spletna_stran) in hotelska_veriga:
   <tr>
     <td>{{ime_hotelske_verige}}</td>
     <td>{{naslov_glavne_pisarne}}</td>
+    <td>{{email_hotelske_verige}}</td>
+    <td>{{spletna_stran}}</td>
   </tr>
   %end
 </table>

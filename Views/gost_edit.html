@@ -1,66 +1,60 @@
 % setdefault('napaka', '')
-% setdefault('naslov', 'Dodaj gosta')
-% rebase('base.html', napaka=napaka, naslov=naslov)
+% setdefault('naslov', 'Dodajanje transporta')
+% rebase('osnova.html')
 
-<form action="{{ '/gostje/uredi/' + gost[0] if defined('gost') else '/gostje/dodaj'}}" method="post">
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end
+
+  <form action="{{'/gostje/dodaj'}}" method="POST">
     <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="gostje_id">Emšo</label>
-            <input id="gostje_id" name="gostje_id" type="text" class="form-control" value="{{gost[0] if defined('gost') else ''}}" required
-                oninput="this.setCustomValidity('')"
-                oninvalid="this.setCustomValidity('Obvezno polje')"
-                />
-        </div>
+      <div class="form-group col-md-3">
+        <label for="ime">ID novega transporta:</label>
+        <input id="ime" name="ime" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="ime">Ime</label>
-            <input id="ime" name="ime" type="text" class="form-control" value="{{gost[1] if defined('gost') else ''}}" required
-                oninput="this.setCustomValidity('')"
-                oninvalid="this.setCustomValidity('Obvezno polje')"
-                />
-
-        </div>
-        <div class="form-group col-md-6">
-            <label for="priimek">Priimek</label>
-            <input id="priimek" name="priimek" type="text" class="form-control" value="{{gost[2] if defined('gost') else ''}}" required
-                oninput="this.setCustomValidity('')"
-                oninvalid="this.setCustomValidity('Obvezno polje')"
-                />
-
-        </div>
+      <div class="form-group col-md-5">
+        <label for="priimek">Vrsta:</label>
+        <input id="priimek" name="priimek" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="email">email</label>
-            <input id="email" name="email" type="text" class="form-control" value="{{gost[3] if defined('gost') else ''}}" required
-                oninput="this.setCustomValidity('')"
-                oninvalid="this.setCustomValidity('Obvezno polje')"
-                />
-
-        </div>
-        <div class="form-group col-md-6">
-            <label for="telefonska_stevilka">Telefonska številka</label>
-            <input id="telefonska_stevilka" name="telefonska_stevilka" type="text" class="form-control" value="{{gost[4] if defined('gost') else ''}}" required
-                oninput="this.setCustomValidity('')"
-                oninvalid="this.setCustomValidity('Obvezno polje')"
-                />
+      <div class="form-group col-md-3">
+        <label for="telefonska_stevilka">Cena:</label>
+        <input id="telefonska_stevilka" name="telefonska_stevilka" type="integer" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-5">
+          <label for="email">Vrsta:</label>
+          <input id="email" name="email" type="text" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="naslov_id">Naslov</label>
-            <select id="naslov_id" name="naslov_id" class="form-control">
-                % for (posta, mesto) in naslov:
-                <option value="{{naslov_id}}">{{posta}} {{mesto}}</option>
-                % end
-            </select>
-
+        <div class="form-group col-md-5">
+          <label for="nasov_id">Vrsta:</label>
+          <input id="naslov_id" name="naslov_id" type="integer" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
         </div>
     </div>
-    <div class="form-row d-flex justify-content-end">
-        <button class="btn btn-primary" type="submit">
-            {{'Popravi' if defined('gost') else 'Dodaj'}}
-        </button>
+    <div class="form-row col">
+      <button class="btn btn-info" type="submit">
+        Dodaj nov transport
+      </button>
     </div>
-</form>
+  </form>

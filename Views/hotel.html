@@ -1,0 +1,23 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Seznam hotelov')
+% rebase('base.html', napaka=napaka, izbrani_zavihek='hotel')
+
+<table id="izpis" class="table table-striped">
+    <tr>
+      <th>Ime</th>
+      <th>Naslov</th>
+      <th>Telefonska številka</th>
+      <th>E-mail</th>
+      <th>Hotelska veriga</th>
+    </tr>
+    %for (ime_hotela, mesto, posta, drzava, telefonska_stevilka, email, ime_hotelske_verige) in hotel:
+    <tr>
+      <td>{{ime_hotela}}</td>
+      <td>{{mesto}} {{posta}} {{drzava}}</td>
+      <td>{{telefonska_stevilka}}</td>
+      <td>{{email}}</td>
+      <td>{{ime_hotelske_verige}}</td>
+
+    </tr>
+    %end
+  </table>
