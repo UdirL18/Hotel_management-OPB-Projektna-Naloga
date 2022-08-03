@@ -1,17 +1,17 @@
 hotel_id,ime_hotela,naslov_id,telefonska_stevilka,email,spletna_stran,opis_hotela,stevilo_nadstropij,stevilo_lezisc,hotelska_veriga_id,ocena,check_in,check_out
-1,Common nighthawk,13,260-99-5695,horourke0@google.com.au,https://wufoo.com,"",1,44,2,2,4/17/2022,7/3/2022
-2,"Lemur, lesser mouse",9,208-15-9383,dmiddleweek1@hao123.com,https://timesonline.co.uk,"",3,31,2,3,1/10/2022,7/4/2022
-3,Eastern fox squirrel,27,631-86-3656,mcastanone2@statcounter.com,http://fda.gov,"",2,2,5,3,2/22/2022,7/4/2022
-4,"Cormorant, flightless",30,174-43-8459,jmarkey3@blogs.com,https://surveymonkey.com,"",4,31,1,5,10/5/2021,7/4/2022
-5,Emerald green tree boa,16,561-76-4328,fcarlisle4@apache.org,http://macromedia.com,"",3,14,3,4,8/14/2021,7/5/2022
-6,"Lemur, sportive",8,276-09-7243,ieldredge5@bigcartel.com,http://sohu.com,"",3,24,4,1,9/8/2021,7/5/2022
-7,Javan gold-spotted mongoose,24,875-40-4484,gdethloff6@tuttocitta.it,https://bigcartel.com,"",1,12,2,5,12/25/2021,7/4/2022
-8,"Phalarope, northern",5,859-13-6551,tkroll7@squidoo.com,https://quantcast.com,"",1,48,2,4,8/27/2021,7/4/2022
-9,Dark-winged trumpeter,4,101-09-7388,mchad8@networksolutions.com,https://sogou.com,"",4,28,4,3,5/20/2022,7/4/2022
-10,"Cobra, cape",30,757-77-4362,nwattins9@epa.gov,https://bloglovin.com,"",1,35,5,2,10/10/2021,7/1/2022
-11,"Wagtail, african pied",29,642-17-8650,gfabbroa@geocities.com,http://ebay.co.uk,"",1,27,2,5,3/26/2022,7/6/2022
-12,"Crane, black-crowned",18,735-02-0115,oalnerb@japanpost.jp,https://yellowpages.com,"",2,7,5,1,9/26/2021,7/2/2022
-13,Nile crocodile,7,796-71-9765,smacinnesc@wired.com,https://cisco.com,"",1,47,4,2,2/7/2022,7/2/2022
-14,"Fox, crab-eating",9,850-69-7540,ldermottd@elegantthemes.com,https://businessinsider.com,"",3,13,2,4,6/21/2022,7/1/2022
-15,"Turkey, common",20,597-71-3651,alinscotte@pagesperso-orange.fr,https://wix.com,"",3,30,1,3,8/16/2021,7/4/2022
-16,Long-tailed skua,14,882-40-5504,rbrassillf@last.fm,http://ucsd.edu,"",2,18,2,1,11/2/2021,7/5/2022
+1,Common nighthawk,13,260-99-5695,horourke0@google.com.au,https://wufoo.com,"",1,44,2,2,2022/1/1,2022/1/7
+2,"Lemur, lesser mouse",9,208-15-9383,dmiddleweek1@hao123.com,https://timesonline.co.uk,"",3,31,2,3,2022/4/10,2022/4/17
+3,Eastern fox squirrel,27,631-86-3656,mcastanone2@statcounter.com,http://fda.gov,"",2,2,5,3,2011/2/22,2022/2/27
+4,"Cormorant, flightless",30,174-43-8459,jmarkey3@blogs.com,https://surveymonkey.com,"",4,31,1,5,2022/5/21,2022/5/28
+5,Emerald green tree boa,16,561-76-4328,fcarlisle4@apache.org,http://macromedia.com,"",3,14,3,4,2022/4/2,2022/4/22
+6,"Lemur, sportive",8,276-09-7243,ieldredge5@bigcartel.com,http://sohu.com,"",3,24,4,1,2021/8/20,2021/8/22
+7,Javan gold-spotted mongoose,24,875-40-4484,gdethloff6@tuttocitta.it,https://bigcartel.com,"",1,12,2,5,2021/5/1,2021/5/10
+8,"Phalarope, northern",5,859-13-6551,tkroll7@squidoo.com,https://quantcast.com,"",1,48,2,4,2022/7/20,2022/8/1
+9,Dark-winged trumpeter,4,101-09-7388,mchad8@networksolutions.com,https://sogou.com,"",4,28,4,3,2022/2/3,2022/2/7
+10,"Cobra, cape",30,757-77-4362,nwattins9@epa.gov,https://bloglovin.com,"",1,35,5,2,2022/10/21,2022/10/30
+11,"Wagtail, african pied",29,642-17-8650,gfabbroa@geocities.com,http://ebay.co.uk,"",1,27,2,5,2022/6/1,2022/6/4
+12,"Crane, black-crowned",18,735-02-0115,oalnerb@japanpost.jp,https://yellowpages.com,"",2,7,5,1,2021/6/21,2021/6/29
+13,Nile crocodile,7,796-71-9765,smacinnesc@wired.com,https://cisco.com,"",1,47,4,2,2022/7/22,2022/7/27
+14,"Fox, crab-eating",9,850-69-7540,ldermottd@elegantthemes.com,https://businessinsider.com,"",3,13,2,4,2022/4/2,2022/4/9
+15,"Turkey, common",20,597-71-3651,alinscotte@pagesperso-orange.fr,https://wix.com,"",3,30,1,3,2022/12/1,2022/12/12
+16,Long-tailed skua,14,882-40-5504,rbrassillf@last.fm,http://ucsd.edu,"",2,18,2,1,2022/12/25,2022/12/31

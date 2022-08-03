@@ -1,7 +1,7 @@
-storitve_id,naziv_storitve,opis_storitve,cena_storitve,hotel_id
-1,"","",33,6
-2,"","",29,10
-3,"","",83,14
-4,"","",34,1
-5,"","",26,4
-6,"","",71,12
+hotelske_storitve_id,naziv_storitve,opis_storitve,cena_storitve,hotel_id
+1,"Masaža","Tajska masaža v dvoje.",33,6
+2,"Paraglajding","Odličen razgled iz višine.",29,10
+3,"Večerja","Večerja ob svečah.",83,14
+4,"Savna","Finska savna.",34,1
+5,"Golf","Igranje golfa in vožnja z golfcar.",26,4
+6,"Čiščenje sobe","Menjava brisač in posteljnine, pospravljanje.",71,12
