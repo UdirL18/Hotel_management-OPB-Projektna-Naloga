@@ -1,5 +1,7 @@
+#uvozimo bottle
 from bottle import *
 from bottleext import *
+
 #import sqlite3
 import hashlib
 import os
@@ -7,7 +9,7 @@ import os
 #uvozimo potrebne podatke za povezavo
 import auth_public as auth
 
-# uvozimo psycopg2 neki sprem - nalozi v ukaznem pozivu pip install psycopg2
+# uvozimo psycopg2 - nalozi v ukaznem pozivu pip install psycopg2
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
 
@@ -17,15 +19,17 @@ RELOADER = os.environ.get('BOTTLE_RELOADER', True)
 DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
 #conn_datoteka = 'HotelManagement.db'
+# odkomentiraj, če želiš sporočila o napakah
 debug(True)
 
 def nastaviSporocilo(sporocilo = None):
     # global napakaSporocilo
     staro = request.get_cookie("sporocilo", secret=skrivnost)
-    if sporocilo is None:
-        response.delete_cookie('sporocilo')
-    else:
-        response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
+    # idk zaki spodaj zakomentirano - iza ma tk
+    # if sporocilo is None:
+    #     response.delete_cookie('sporocilo')
+    # else:
+    #     response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
     return staro
 
 # Mapa za statične vire (slike, css, ...)
@@ -33,26 +37,122 @@ static_dir = "./static"
 
 skrivnost = "rODX3ulHw3ZYRdbIVcp1IfJTDn8iQTH6TFaNBgrSkjIulr"
 
-# #def preveriUporabnika(): 
-# #    username = request.get_cookie("username", secret=skrivnost)
-# #    if username:
-# #        cur = conn.cursor()    
-# #        uporabnik = None
-# #        try: 
-# #            uporabnik = cur.execute("SELECT * FROM oseba WHERE username = ?", (username, )).fetchone()
-# #        except:
-# #            uporabnik = None
-# #        if uporabnik: 
-# #            return uporabnik
-# #    redirect('/prijava')
-
-@route("/static/<filename:path>")
+@get('/static/<filename:path>')
 def static(filename):
-    return static_file(filename, root=static_dir)
+    return static_file(filename, root='static')
 
+def preveriUporabnika(): 
+   username = request.get_cookie("username", secret=skrivnost)
+   if username:
+       cur = conn.cursor()    
+       uporabnik = None
+       try: 
+           uporabnik = cur.execute("SELECT * FROM oseba WHERE username = ?", (username, )).fetchone()
+       except:
+           uporabnik = None
+       if uporabnik: 
+           return uporabnik
+   redirect('/prijava')
+
+#------------------------------------------------
+#FUNKCIJE ZA IZGRADNJO STRANI
+# @route("/static/<filename:path>")
+# def static(filename):
+#     return static_file(filename, root=static_dir)
+
+#-----------------------------------------------
+#ZAČETNA STRAN
+#-----------------------------------------------
 @get('/')
 def index():
     return template('zacetna_stran.html')
+#------------------------------------------------
+
+
+#------------------------------------------------
+# REGISTRACIJA, PRIJAVA, ODJAVA
+#------------------------------------------------
+
+def hashGesla(s):
+    m = hashlib.sha256()
+    m.update(s.encode("utf-8"))
+    return m.hexdigest()
+
+@get('/registracija')
+def registracija_get():
+    napaka = nastaviSporocilo()
+    return template('registracija.html', napaka=napaka)
+
+@post('/registracija')
+def registracija_post():
+    zaposleni_id = request.forms.zaposleni_id
+    username = request.forms.username
+    password = request.forms.password
+    password2 = request.forms.password2
+    if zaposleni_id is None or username is None or password is None or password2 is None: 
+        nastaviSporocilo('Registracija ni možna') 
+        redirect('/registracija')
+        return
+    cur = conn.cursor()    
+    uporabnik = None
+    try: 
+        uporabnik = cur.execute("SELECT * FROM zaposleni WHERE zaposleni_id = ?", (zaposleni_id, )).fetchone()
+    except:
+        uporabnik = None
+    if uporabnik is None:
+        nastaviSporocilo('Registracija ni možna') 
+        redirect('/registracija')
+        return
+    if len(password) < 4:
+        nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
+        redirect('/registracija')
+        return
+    if password != password2:
+        nastaviSporocilo('Gesli se ne ujemata.') 
+        redirect('/registracija')
+        return
+    zgostitev = hashGesla(password)
+    cur.execute("UPDATE zaposleni set username = ?, password = ? WHERE zaposleni_id = ?", (username, zgostitev, zaposleni_id))
+    response.set_cookie('username', username, secret=skrivnost)
+    redirect('/zaposleni')
+
+
+
+@get('/prijava')
+def prijava_get():
+   napaka = nastaviSporocilo()
+   return template('prijava.html', napaka=napaka)
+
+@post('/prijava')
+def prijava_post():
+   username = request.forms.username
+   password = request.forms.password
+   if username is None or password is None:
+       nastaviSporocilo('Uporabniško ima in geslo morata biti neprazna') 
+       redirect('/prijava')
+       return
+   cur = conn.cursor()    
+   hashconn = None
+   try: 
+       hashconn = cur.execute("SELECT password FROM oseba WHERE username = ?", (username, )).fetchone()
+       hashconn = hashconn[0]
+   except:
+       hashconn = None
+   if hashconn is None:
+       nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+       redirect('/prijava')
+       return
+   if hashGesla(password) != hashconn:
+       nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+       redirect('/prijava')
+       return
+   response.set_cookie('username', username, secret=skrivnost)
+   redirect('/zaposleni')
+    
+@get('/odjava')
+def odjava_get():
+   response.delete_cookie('username')
+   redirect('/')
 
 ### ZAPOSLENI
 @get('/zaposleni')
@@ -163,89 +263,6 @@ def dodaj_gosta_get():
 #     JOIN hotel_podatki ON sobe.hotel_id=hotel_podatki.ime_hotela""")
 #     return template('sobe.html', sobe=sobe)
 
-
-# ### REGISTRACIJA, PRIJAVA
-
-# def hashGesla(s):
-#     m = hashlib.sha256()
-#     m.update(s.encode("utf-8"))
-#     return m.hexdigest()
-
-# @get('/registracija')
-# def registracija_get():
-#     napaka = nastaviSporocilo()
-#     return template('registracija.html', napaka=napaka)
-
-# @post('/registracija')
-# def registracija_post():
-#     zaposleni_id = request.forms.zaposleni_id
-#     username = request.forms.username
-#     password = request.forms.password
-#     password2 = request.forms.password2
-#     if zaposleni_id is None or username is None or password is None or password2 is None:
-#         nastaviSporocilo('Registracija ni možna') 
-#         redirect('/registracija')
-#         return
-#     cur = conn.cursor()    
-#     uporabnik = None
-#     try: 
-#         uporabnik = cur.execute("SELECT * FROM zaposleni WHERE zaposleni_id = ?", (zaposleni_id, )).fetchone()
-#     except:
-#         uporabnik = None
-#     if uporabnik is None:
-#         nastaviSporocilo('Registracija ni možna') 
-#         redirect('/registracija')
-#         return
-#     if len(password) < 4:
-#         nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
-#         redirect('/registracija')
-#         return
-#     if password != password2:
-#         nastaviSporocilo('Gesli se ne ujemata.') 
-#         redirect('/registracija')
-#         return
-#     zgostitev = hashGesla(password)
-#     cur.execute("UPDATE zaposleni set username = ?, password = ? WHERE zaposleni_id = ?", (username, zgostitev, zaposleni_id))
-#     response.set_cookie('username', username, secret=skrivnost)
-#     redirect('/zaposleni')
-
-
-
-# #@get('/prijava')
-# #def prijava_get():
-# #    napaka = nastaviSporocilo()
-# #    return template('prijava.html', napaka=napaka)
-
-# #@post('/prijava')
-# #def prijava_post():
-# #    username = request.forms.username
-# #    password = request.forms.password
-# #    if username is None or password is None:
-# #        nastaviSporocilo('Uporabniško ima in geslo morata biti neprazna') 
-# #        redirect('/prijava')
-# #        return
-# #    cur = conn.cursor()    
-# #    hashconn = None
-# #    try: 
-# #        hashconn = cur.execute("SELECT password FROM oseba WHERE username = ?", (username, )).fetchone()
-# #        hashconn = hashconn[0]
-# #    except:
-# #        hashconn = None
-# #    if hashconn is None:
-# #        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-# #        redirect('/prijava')
-# #        return
-# #    if hashGesla(password) != hashconn:
-# #        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-# #        redirect('/prijava')
-# #        return
-# #    response.set_cookie('username', username, secret=skrivnost)
-# #    redirect('/komitenti')
-    
-# #@get('/odjava')
-# #def odjava_get():
-# #    response.delete_cookie('username')
-# #    redirect('/prijava')
 
 # ### OSTALO
 
