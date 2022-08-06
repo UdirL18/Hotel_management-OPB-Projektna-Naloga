@@ -1,4 +1,5 @@
 #uvozimo bottle
+from ctypes import get_last_error
 from bottle import *
 from bottleext import *
 
@@ -26,10 +27,10 @@ def nastaviSporocilo(sporocilo = None):
     # global napakaSporocilo
     staro = request.get_cookie("sporocilo", secret=skrivnost)
     # idk zaki spodaj zakomentirano - iza ma tk
-    # if sporocilo is None:
-    #     response.delete_cookie('sporocilo')
-    # else:
-    #     response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
+    if sporocilo is None:
+        response.delete_cookie('sporocilo')
+    else:
+        response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
     return staro
 
 # Mapa za statične vire (slike, css, ...)
@@ -47,7 +48,7 @@ def preveriUporabnika():
        cur = conn.cursor()    
        uporabnik = None
        try: 
-           uporabnik = cur.execute("SELECT * FROM oseba WHERE username = ?", (username, )).fetchone()
+           uporabnik = cur.execute("SELECT * FROM zaposleni WHERE username = %s", (username, )).fetchone()
        except:
            uporabnik = None
        if uporabnik: 
@@ -85,36 +86,69 @@ def registracija_get():
 
 @post('/registracija')
 def registracija_post():
-    zaposleni_id = request.forms.zaposleni_id
+    ime = request.forms.ime
     username = request.forms.username
     password = request.forms.password
     password2 = request.forms.password2
-    if zaposleni_id is None or username is None or password is None or password2 is None: 
-        nastaviSporocilo('Registracija ni možna') 
-        redirect('/registracija')
-        return
-    cur = conn.cursor()    
-    uporabnik = None
-    try: 
-        uporabnik = cur.execute("SELECT * FROM zaposleni WHERE zaposleni_id = ?", (zaposleni_id, )).fetchone()
-    except:
-        uporabnik = None
-    if uporabnik is None:
-        nastaviSporocilo('Registracija ni možna') 
-        redirect('/registracija')
-        return
+
+    print(ime, username, password, password2)
+
+    if (ime == '') or (username == '') or (password == '') or (password2 == ''): 
+        nastaviSporocilo('Registracija ni možna, ker dobim prazen string.') 
+        #redirect('/registracija')
+        redirect(url('registracija_get'))
+        #return None #  brezveze
+    # cur = conn.cursor()     # je že vspostavljen ne rabim še enkrat
+    #uporabnik = None #  to je mal brezveze
+    # try: 
+    try:
+        cur.execute(f"SELECT * FROM zaposleni WHERE ime = \'{ime}\'")
+        uporabnik = cur.fetchone()
+    except Exception:
+        conn.rollback()
+        # nared neki če ga ni
+        nastaviSporocilo('Registracija ni možna, uporabnik ni v bazi.') 
+        #redirect('/registracija')
+        redirect(url('registracija_get'))
+    #     print(e)
+    #     uporabnik = None
+    # if uporabnik is None:
+    #     nastaviSporocilo('Registracija ni možna, uporabnik ni v bazi.') 
+    #     #redirect('/registracija')
+    #     redirect(url('registracija_get'))
+    #     return
     if len(password) < 4:
         nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
-        redirect('/registracija')
-        return
+        #redirect('/registracija')
+        redirect(url('registracija_get'))
+
     if password != password2:
         nastaviSporocilo('Gesli se ne ujemata.') 
-        redirect('/registracija')
-        return
+        #redirect('/registracija')
+        redirect(url('registracija_get'))
+
     zgostitev = hashGesla(password)
-    cur.execute("UPDATE zaposleni set username = ?, password = ? WHERE zaposleni_id = ?", (username, zgostitev, zaposleni_id))
+    #cur.execute("UPDATE zaposleni set username = %s, password = %s WHERE ime = %s", (username, zgostitev, ime))
+    try:
+        # cur.execute("""INSERT INTO zaposleni
+        #             (ime, username, password)
+        #             VALUES (%s, %s, %s)""", (ime, username, zgostitev))
+        cur.execute(f"""UPDATE zaposleni
+                        SET
+                            username = \'{username}\',
+                            password = \'{zgostitev}\'
+                        WHERE
+                            ime = \'{ime}\'""")
+        conn.commit()
+    except Exception as e:
+        print(e)
+        conn.rollback()
+        #redirect('/registracija')
+        redirect(url('registracija_get'))
+
     response.set_cookie('username', username, secret=skrivnost)
-    redirect('/zaposleni')
+    print('vrzem vas na zaposlene')
+    redirect('/prijava')
 
 
 
@@ -127,27 +161,28 @@ def prijava_get():
 def prijava_post():
    username = request.forms.username
    password = request.forms.password
-   if username is None or password is None:
+   if (username=='') or (password==''):
        nastaviSporocilo('Uporabniško ima in geslo morata biti neprazna') 
        redirect('/prijava')
-       return
-   cur = conn.cursor()    
-   hashconn = None
+
+#    cur = conn.cursor()    
+#    hashconn = None
    try: 
-       hashconn = cur.execute("SELECT password FROM oseba WHERE username = ?", (username, )).fetchone()
-       hashconn = hashconn[0]
+       cur.execute("SELECT password FROM zaposleni WHERE username = %s", (username, ))
+       hashconn = cur.fetchone()
+       hashconn = hashconn[-1]  # ne dodajaj kolon na desno
    except:
-       hashconn = None
-   if hashconn is None:
-       nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-       redirect('/prijava')
-       return
+        conn.rollback()
+        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+        redirect('/prijava')
+
    if hashGesla(password) != hashconn:
        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
        redirect('/prijava')
-       return
+       
+
    response.set_cookie('username', username, secret=skrivnost)
-   redirect('/zaposleni')
+   redirect('/hotelska_veriga')
     
 @get('/odjava')
 def odjava_get():
