@@ -1,30 +1,93 @@
 % setdefault('napaka', '')
 % setdefault('naslov', 'Prijava')
-% rebase('base.html', napaka=napaka, naslov=naslov)
 
-<form action="/prijava" method="post" autocomplete="off">
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="username">Uporabniško ime</label>
-      <input id="username" name="username" type="text" class="form-control" required
-        oninput="this.setCustomValidity('')"
-        oninvalid="this.setCustomValidity('Obvezno polje')"
-        />
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  /* Add padding to containers */
+  .container {
+    padding: 80px;
+    background-color: white;
+  }
+  
+  /* Full-width input fields */
+  input[type=text], input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
+  }
+  
+  input[type=text]:focus, input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+  }
+  
+  /* Set a style for the submit button */
+  .registerbtn {
+    background-color: darkkhaki;
+    border: black;
+    color: black;
+    font-size: 15px;
+    padding: 16px 20px;
+    margin: 8px 0;
+    cursor: pointer;
+    opacity: 0.9;
+  }
+</style>
+
+
+
+  <div style="width: 100%;">
+    <div style="width: 50%; height: 100%; float: left; background: darkkhaki;">
+      <p style="text-align:center; position:relative; top:70px">
+        <img src={{url('static', filename='management_logo.png')}} alt="centered image" style="width:300px;height:140px">
+      </p>
+      <h1 style="color:white; text-align: center; position:relative; top:75px">Management hotelskih verig</h1>
+      <p style="color:white; text-align: center; position:relative; top:80px">neki opis</p>
+    </div>
+    <div class="container", style="margin-left: 50%; height: 100%"> 
+      <form action="/prijava" method="post" autocomplete="off">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="username">Uporabniško ime</label>
+          <input id="username" name="username" type="text" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="password">Geslo</label>
+          <input id="password" name="password" type="password" class="form-control" required
+            oninput="this.setCustomValidity('')"
+            oninvalid="this.setCustomValidity('Obvezno polje')"
+            />
+        </div>
+      </div>
+      <div class="form-row col">
+        <button class="registerbtn" type="submit">
+          Prijava
+        </button>
+      </div>
+      </form>
+      <form action="{{url('registracija_get')}}" method="get">  
+        <div class="container"></div>
+          <p>Še nimate uporabniškega računa?</p>
+          <button class="registerbtn" type="submit">
+            Registriraj se!
+          </button>
+        </div>
+      </form>    
     </div>
   </div>
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="password">Geslo</label>
-      <input id="password" name="password" type="password" class="form-control" required
-        oninput="this.setCustomValidity('')"
-        oninvalid="this.setCustomValidity('Obvezno polje')"
-        />
-    </div>
-  </div>
-  <div class="form-row col">
-    <button class="btn btn-primary" type="submit">
-      Prijava
-    </button>
-  </div>
-
-</form>
