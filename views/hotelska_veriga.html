@@ -9,10 +9,10 @@
     <th>E-mail</th>
     <th>Spletna stran</th>
   </tr>
-  %for (ime_hotelske_verige, naslov_glavne_pisarne, email_hotelske_verige, spletna_stran) in hotelska_veriga:
+  %for (ime_hotelske_verige, mesto, posta, drzava, email_hotelske_verige, spletna_stran) in hotelska_veriga:
   <tr>
     <td>{{ime_hotelske_verige}}</td>
-    <td>{{naslov_glavne_pisarne}}</td>
+    <td>{{mesto}} {{posta}} {{drzava}}</td>
     <td>{{email_hotelske_verige}}</td>
     <td>{{spletna_stran}}</td>
   </tr>

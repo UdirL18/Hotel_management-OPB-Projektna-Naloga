@@ -55,6 +55,15 @@
             % end
           % end
         </div>    
+        % if defined('izbrani_zavihek'):
+        <div class="navbar-end", style="position:relative; top:15px">
+          <span>
+            <form action="{{url('odjava_get')}}" method="GET">
+              <input type="submit" value="Odjavi me">
+            </form>
+          </span>
+        </div>
+        % end
       </div>
     </nav>
     

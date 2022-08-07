@@ -2,28 +2,22 @@
 % setdefault('naslov', 'Seznam zaposlenih')
 % rebase('base.html', napaka=napaka, izbrani_zavihek='zaposleni')
 
-<table id="izpis" class="table table-striped"> <a class="btn btn-primary" href="{{url('dodaj_zaposlenega')}}"role="button">Dodaj zaposlenega</a>
+<table id="izpis" class="table table-striped">
   <tr>
-    <th>Id</th>
     <th>Ime</th>
     <th>Priimek</th>
-    <th>Telefonska številka</th>
-    <th>E-mail</th>
     <th>Naziv</th>
     <th>Naslov</th>
     <th>Hotel</th>
     <th>Oddelek</th>
   </tr>
-  %for (zaposleni_id,ime,priimek,naziv,telefonska_stevilka,email,oddelek_id,naslov_id,hotel_id) in zaposleni:
+  %for (ime,priimek,naziv,oddelek_id,mesto,posta,drzava,ime_hotela) in zaposleni:
   <tr>
-    <th>{{zaposleni_id}}</th>
     <td>{{ime}}</td>
     <td>{{priimek}}</td>
-    <td>{{telefonska_stevilka}}</td>
-    <td>{{email}}</td>
     <td>{{naziv}}</td>
-    <td>{{naslov_id}}</td>
-    <td>{{hotel_id}}</td>
+    <td>{{mesto}} {{posta}} {{drzava}}</td>
+    <td>{{ime_hotela}}</td>
     <td>{{oddelek_id}}</td>
   </tr>
   %end
