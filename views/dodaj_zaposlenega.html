@@ -4,9 +4,9 @@
 
 <form action="{{url('dodaj_zaposlenega')}}" method="post" autocomplete="off">
   <div>
-    <input type = "radio" name = "tip" value = "zaposleni"> Vpisujem komitenta
+    <input type = "radio" name = "tip" value = "zaposleni"> Vpisujem zaposlenega v skladu z zakonom o varovanju osebnih podatkov.
   </div>
-  <div class="form-row">
+  <!-- <div class="form-row">
       <div class="form-group col-md-6">
         <label for="id">Id</label>
         <input id="zaposleni_id" name="zaposelni_id" type="text" class="form-control" required
@@ -14,7 +14,7 @@
           oninvalid="this.setCustomValidity('Obvezno polje')"
           />
       </div>
-  </div>
+  </div> -->
   <div class="form-row">
       <div class="form-group col-md-6">
         <label for="ime">Ime</label>
@@ -62,14 +62,78 @@
     </div>
     <div class="form-row">
       <div class="form-group col-md-6">
-        <label for="oddelek_id">Oddelek</label>
-        <input id="oddelek_id" name="oddelek_id" type="text" class="form-control" required
+        <label for="mesto">Mesto stalnega prebivališča:</label>
+        <input id="mesto" name="mesto" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+  
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="posta">Poštna številka:</label>
+        <input id="posta" name="posta" type="text" class="form-control" required
           oninput="this.setCustomValidity('')"
           oninvalid="this.setCustomValidity('Obvezno polje')"
           />
       </div>
     </div>
     <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="drzava">Država:</label>
+        <input id="drzava" name="drzava" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <!-- <input id="oddelek_id" name="oddelek_id" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          /> -->
+          <label for="hotel">Izberi hotel:</label>
+          <select name="hotel" id="hotel">
+            <option value="Common nighthawk">Common nighthawk</option>
+            <option value="Lemur, lesser mouse">Lemur, lesser mouse</option>
+            <option value="Eastern fox squirrel">Eastern fox squirrel</option>
+            <option value="Cormorant, flightless">Cormorant, flightless</option>
+            <option value="Emerald green tree boa">Emerald green tree boa</option>
+            <option value="Lemur, sportive">Lemur, sportive</option>
+            <option value="Javan gold-spotted mongoose">Javan gold-spotted mongoose</option>
+            <option value="Phalarope, northern">Phalarope, northern</option>
+            <option value="Dark-winged trumpeter">Dark-winged trumpeter</option>
+            <option value="Cobra, cape">Cobra, cape</option>
+            <option value="	Wagtail, african pied">	Wagtail, african pied</option>
+            <option value="Crane, black-crowned">Crane, black-crowned</option>
+            <option value="Nile crocodile">Nile crocodile</option>
+            <option value="Fox, crab-eating">Fox, crab-eating</option>
+            <option value="Turkey, common">Turkey, common</option>
+            <option value="Long-tailed skua">Long-tailed skua</option>
+          </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <!-- <input id="oddelek_id" name="oddelek_id" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          /> -->
+          <label for="oddelek">Izberi oddelek:</label>
+          <select name="oddelek" id="oddelek">
+            <option value="Kuhinja">Kuhinja</option>
+            <option value="Recepcija">Recepcija</option>
+            <option value="Športne storitve">Športne storitve</option>
+            <option value="Savne in bazeni">Savne in bazeni</option>
+            <option value="Vzdrževanje">Vzdrževanje</option>
+          </select>
+      </div>
+    </div>
+    <!-- <div class="form-row">
       <div class="form-group col-md-6">
         <label for="naslov_id">Naslov</label>
         <input id="naslov_id" name="naslov_id" type="text" class="form-control" required
@@ -86,7 +150,7 @@
           oninvalid="this.setCustomValidity('Obvezno polje')"
           />
       </div>
-    </div>
+    </div> -->
     
     </div>
     <p><input type="submit" value="Dodaj"></p>

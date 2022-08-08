@@ -11,7 +11,7 @@ def ustvari_tabelo():
     cur.execute("""
     CREATE TABLE zaposleni
     (
-    zaposleni_id INT PRIMARY KEY NOT NULL,
+    zaposleni_id SERIAL PRIMARY KEY NOT NULL,
     ime varchar(45) NOT NULL,
     priimek varchar(45) NOT NULL,
     naziv  varchar(45) NOT NULL,

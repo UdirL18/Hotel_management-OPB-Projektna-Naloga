@@ -11,7 +11,7 @@ def ustvari_tabelo():
     cur.execute("""
     CREATE TABLE rezervirane_sobe
     (
-        rezervirane_sobe_id INT PRIMARY KEY NOT NULL,
+        rezervirane_sobe_id SERIAL PRIMARY KEY NOT NULL,
         rezervacije_id INT REFERENCES rezervacije(rezervacije_id),
     sobe_id INT REFERENCES sobe(soba_id)
     );

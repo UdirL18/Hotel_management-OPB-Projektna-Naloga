@@ -11,7 +11,7 @@ def ustvari_tabelo():
     cur.execute("""
     CREATE TABLE popusti_za_sobo
     (
-        popust_id INT PRIMARY KEY NOT NULL,
+    popust_id SERIAL PRIMARY KEY NOT NULL,
     mesec_zacetka INT, 
     mesec_konca INT,
     diskontna_stopnja DECIMAL(10,2) NOT NULL,

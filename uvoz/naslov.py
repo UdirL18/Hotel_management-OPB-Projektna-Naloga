@@ -11,7 +11,7 @@ def ustvari_tabelo():
     cur.execute("""
     CREATE TABLE naslov
     (
-    naslov_id INT PRIMARY KEY NOT NULL,
+    naslov_id SERIAL PRIMARY KEY NOT NULL,
     mesto varchar(45) NOT NULL,
     drzava varchar(45) NOT NULL,
     posta varchar(45) NOT NULL

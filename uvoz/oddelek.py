@@ -11,7 +11,7 @@ def ustvari_tabelo():
     cur.execute("""
     CREATE TABLE oddelek
     (
-    oddelek_id INT PRIMARY KEY NOT NULL,
+    oddelek_id SERIAL PRIMARY KEY NOT NULL,
     oddelek_ime varchar(45) NOT NULL,
     oddelek_opis Varchar(100)    
     );

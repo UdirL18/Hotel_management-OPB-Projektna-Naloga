@@ -11,7 +11,7 @@ def ustvari_tabelo():
     cur.execute("""
     CREATE TABLE ocena
     (
-    ocena INT PRIMARY KEY NOT NULL
+    ocena SERIAL PRIMARY KEY NOT NULL
     );
     """) 
     conn.commit()

@@ -104,6 +104,7 @@ def registracija_post():
     try:
         cur.execute(f"SELECT * FROM zaposleni WHERE ime = \'{ime}\'")
         uporabnik = cur.fetchone()
+        print(uporabnik)
     except Exception:
         conn.rollback()
         # nared neki če ga ni
@@ -201,24 +202,63 @@ def zaposleni():
     cur.fetchone()
     return template('zaposleni.html', zaposleni=cur)
 
-#@get('/dodaj_zaposlenega')
-#def dodaj_agenta():
-#    return template('dodaj_zaposlenega.html', zaposleni_id='', ime='', priimek='', naziv='', telefonska_stevilka='', email='', oddelek_id='', naslov_id='', hotel_id='', username='', password='', napaka=None)
+@get('/dodaj_zaposlenega')
+def dodaj_zaposlenega():
+   return template('dodaj_zaposlenega.html', zaposleni_id='', ime='', priimek='', naziv='', telefonska_stevilka='', email='', oddelek_id='', naslov_id='', hotel_id='', username='', password='', napaka=None)
 
-#@post('/dodaj_zaposlenega')
-#def dodaj_zaposlenega_post():
+@post('/dodaj_zaposlenega')
+def dodaj_zaposlenega_post():
 #    zaposleni_id = request.forms.zaposleni_id
-#    ime = request.forms.ime
-#    priimek = request.forms.priimek
-#    naziv = request.forms.naziv
-#    telefonska_stevilka = request.forms.telefonska_stevilka
-#    email = request.forms.email
-#    oddelek_id = request.forms.oddelek_id
-#    naslov_id = request.forms.naslov_id
-#    hotel_id = request.forms.hotel_id
+   ime = request.forms.ime
+   priimek = request.forms.priimek
+   naziv = request.forms.naziv
+   telefonska_stevilka = request.forms.telefonska_stevilka
+   email = request.forms.email
+   oddelek = request.forms.oddelek
+   mesto = request.forms.mesto
+   drzava = request.forms.drzava
+   posta = request.forms.posta
+   hotel = request.forms.hotel
 #    username = request.forms.username
 #    password = request.forms.password
 #    password2 = hashGesla(password2)
+   print(ime, priimek, naziv, mesto, posta, drzava, telefonska_stevilka, email, oddelek)
+   
+   cur.execute("""INSERT INTO naslov
+                (mesto, posta, drzava)
+                VALUES (%s, %s, %s)""", (mesto, posta, drzava))
+   conn.commit()
+   conn.rollback()
+
+
+#    cur.execute("""INSERT INTO naslov
+#                 (mesto, posta, drzava)
+#                 VALUES (%s, %s, %s)""", (mesto, posta, drzava))
+#    conn.commit()
+#    conn.rollback()
+
+#    print('insertov sem oddelek')
+
+   cur.execute("""SELECT naslov_id FROM naslov WHERE mesto = %s """,(mesto,))
+   naslov_id = cur.fetchall()[0][0]
+
+   cur.execute("""SELECT hotel_id FROM hotel_podatki WHERE ime_hotela = %s """,(hotel,))
+   hotel_id = cur.fetchall()[0][0]
+   print('tale id za hotel:')
+   print(hotel_id)
+
+   cur.execute("""SELECT oddelek_id FROM oddelek WHERE oddelek_ime = %s """,(oddelek,))
+   oddelek_id = cur.fetchall()[0][0]
+   print('tale id za oddelek:')
+   print(oddelek_id)   
+
+   
+   cur.execute("""INSERT INTO zaposleni
+               (ime, priimek, naziv, naslov_id, hotel_id, oddelek_id, telefonska_stevilka, email)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s )""", (ime, priimek, naziv, naslov_id, hotel_id, oddelek_id, telefonska_stevilka, email))
+   conn.commit()
+   conn.rollback()   
+   redirect(url('zaposleni'))
 
 #    cur.execute("""INSERT INTO zaposleni
 #                (zaposleni_id,ime,priimek,naziv,telefonska_stevilka,email,oddelek_id,naslov_id,hotel_id, username, password)

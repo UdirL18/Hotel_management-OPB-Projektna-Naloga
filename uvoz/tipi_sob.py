@@ -11,7 +11,7 @@ def ustvari_tabelo():
     cur.execute("""
     CREATE TABLE tipi_sob
     (
-    tip_sobe_id INT PRIMARY KEY NOT NULL,
+    tip_sobe_id SERIAL PRIMARY KEY NOT NULL,
     tip_sobe_ime varchar(45) NOT NULL,
     tip_sobe_opis varchar(100),
     cena_sobe DECIMAL(10,2) NOT NULL,

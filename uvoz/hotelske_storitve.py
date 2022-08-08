@@ -11,7 +11,7 @@ def ustvari_tabelo():
     cur.execute("""
     CREATE TABLE hotelske_storitve
     (
-    hotelske_storitve_id INT PRIMARY KEY NOT NULL,
+    hotelske_storitve_id SERIAL PRIMARY KEY NOT NULL,
     naziv_storitve varchar(45) NOT NULL,
     cena_storitve DECIMAL(10,2) NOT NULL,
     opis_storitve varchar(100),
