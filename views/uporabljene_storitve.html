@@ -1,0 +1,34 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Seznam uporabljenih storitev')
+% rebase('base.html', napaka=napaka)
+
+<table id="izpis" class="table table-striped">
+    <tr>
+      <th>Storitev</th>
+      <th>Opis</th>
+      <th>Hotel</th>
+      <th>Cena</th>
+    </tr>
+    %for (naziv_storitve,opis_storitve,cena_storitve,ime_hotela) in uporabljene_storitve:
+    <tr>
+      <td>{{naziv_storitve}}</td>
+      <td>{{opis_storitve}}</td>
+      <td>{{ime_hotela}}</td>
+      <td>{{cena_storitve}}</td>
+    </tr>
+    %end
+</table>
+
+<script language="javascript" type="text/javascript">
+            
+    var table = document.getElementById("izpis"), sumVal = 0;
+    
+    for(var i = 1; i < table.rows.length; i++)
+    {
+        sumVal = sumVal + parseInt(table.rows[i].cells[3].innerHTML);
+    }
+    
+    document.getElementById("val").innerHTML = "Sum Value = " + sumVal;
+    console.log(sumVal);
+    
+</script>

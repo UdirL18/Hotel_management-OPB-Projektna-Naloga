@@ -1,0 +1,20 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Seznam hotelskih storitev')
+% rebase('base.html', napaka=napaka, izbrani_zavihek='hotelske_storitve')
+
+<table id="izpis" class="table table-striped"><a class="btn btn-primary" href="{{url('uporabljene_storitve')}}"role="button">Uporabljene storitve in dobiček</a>
+    <tr>
+      <th>Storitev</th>
+      <th>Opis</th>
+      <th>Hotel</th>
+      <th>Cena</th>
+    </tr>
+    %for (naziv_storitve,opis_storitve,cena_storitve,ime_hotela) in hotelske_storitve:
+    <tr>
+      <td>{{naziv_storitve}}</td>
+      <td>{{opis_storitve}}</td>
+      <td>{{ime_hotela}}</td>
+      <td>{{cena_storitve}}</td>
+    </tr>
+    %end
+</table>
