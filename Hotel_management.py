@@ -189,8 +189,9 @@ def prijava_post():
 def odjava_get():
    response.delete_cookie('username')
    redirect('/prijava')
-
-### ZAPOSLENI
+#-----------------------------------------------------------------------------------------
+# ZAPOSLENI
+#-----------------------------------------------------------------------------------------
 
 @get('/zaposleni')
 def zaposleni():
@@ -261,31 +262,10 @@ def dodaj_zaposlenega_post():
    conn.rollback()   
    redirect(url('zaposleni'))
 
-#    cur.execute("""INSERT INTO zaposleni
-#                (zaposleni_id,ime,priimek,naziv,telefonska_stevilka,email,oddelek_id,naslov_id,hotel_id, username, password)
-#                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (zaposleni_id,ime,priimek,naziv,telefonska_stevilka,email,oddelek_id,naslov_id,hotel_id, username, password2))
-#    redirect(url('zaposleni'))
 
-#@get('/zaposleni/dodaj')
-#def dodaj_komitenta_get():
-#    return template('zaposleni-edit.html')
-
-#@post('/zaposleni/dodaj') 
-#def dodaj_zaposleni():
-#    zaposleni_id = request.forms.zaposleni_id
-#    ime = request.forms.ime
-#    priimek = request.forms.priimek
-#    email = request.forms.email
-#    naziv = request.forms.naziv
-#    telefonska_stevilka = request.forms.telefonska_stevilka
-#    naslov_id = request.forms.naslov_id
-#    hotel_id = request.forms.hotel_id
-#    oddelek_id = request.forms.oddelek_id
-#    cur = conn.cursor()
-#    cur.execute("INSERT INTO zaposleni (zaposleni_id, ime, priimek, naziv, telefonska_stevilka, email,oddelek_id, naslov_id, hotel_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (zaposleni_id, ime, priimek, naziv, telefonska_stevilka, email,oddelek_id, naslov_id, hotel_id))
-#    redirect('/zaposleni')
-
-### HOTELSKA VERIGA
+#----------------------------------------------------------------------------------------
+# HOTELSKA VERIGA
+#-----------------------------------------------------------------------------------------
 
 @get('/hotelska_veriga')
 def hotelska_veriga():
@@ -296,7 +276,10 @@ def hotelska_veriga():
     cur.fetchone()
     return template('hotelska_veriga.html', hotelska_veriga=cur)
 
-### HOTEL
+
+#-------------------------------------------------------------------------------------------
+# HOTEL
+#------------------------------------------------------------------------------------------
 
 @get('/hotel')
 def hotel():
@@ -309,7 +292,10 @@ def hotel():
     cur.fetchone()
     return template('hotel.html', hotel=cur)
 
-### GOST
+
+#---------------------------------------------------------------------------------------
+# GOST
+#---------------------------------------------------------------------------------------
 
 @get('/gostje')
 def gostje():
@@ -321,26 +307,80 @@ def gostje():
     cur.fetchone()
     return template('gostje.html', gostje=cur)
 
-#@get('/gostje/dodaj')
-#def naslov():
-#    cur = conn.cursor()
-#    naslovi = cur.execute("SELECT mesto,posta,drzava from naslov")
-#
-#def dodaj_gosta_get():
-#    naslovi = cur.execute("SELECT mesto,posta,drzava FROM naslov")
-#    return template('gost_edit.html', naslovi=naslovi)
+@get('/dodaj_gosta')
+def dodaj_gosta():
+   return template('dodaj_gosta.html', gostje_id='', ime='', priimek='', kreditna_kartica='', email='', telefonska_stevilka='', naslov_id='', napaka=None)
 
-# @post('/gostje/dodaj') 
-# def dodaj_gosta_post():
-#     ime = request.forms.ime
-#     priimek = request.forms.priimek
-#     telefonska_stevilka = request.forms.telefonska_stevilka
-#     email = request.forms.email
-#     naslov_id = request.forms.naslov_id
-#     cur = conn.cursor()
-#     cur.execute("INSERT INTO gostje (ime,priimek,telefonska_stevilka,email,naslov_id) VALUES (?, ?, ?, ?, ?)", 
-#          (ime,priimek,telefonska_stevilka,email,naslov_id))
-#     redirect('/gostje')
+
+@post('/dodaj_gosta')
+def dodaj_gosta_post():
+#    zaposleni_id = request.forms.zaposleni_id
+   ime = request.forms.ime
+   priimek = request.forms.priimek
+   kreditna_kartica = request.forms.kreditna_kartica
+   telefonska_stevilka = request.forms.telefonska_stevilka
+   email = request.forms.email
+   mesto = request.forms.mesto
+   drzava = request.forms.drzava
+   posta = request.forms.posta
+   print(ime, priimek, kreditna_kartica, mesto, posta, drzava, telefonska_stevilka, email)
+   
+   cur.execute("""INSERT INTO naslov 
+                (mesto, posta, drzava) 
+                VALUES (%s, %s, %s)""", (mesto, posta, drzava))
+                
+   conn.commit()
+   conn.rollback()
+
+   cur.execute("""SELECT naslov_id FROM naslov WHERE mesto = %s """,(mesto,))
+   naslov_id = cur.fetchall()[0][0]
+
+#    cur.execute("""SELECT hotel_id FROM hotel_podatki WHERE ime_hotela = %s """,(hotel,))
+#    hotel_id = cur.fetchall()[0][0]
+#    print('tale id za hotel:')
+#    print(hotel_id)
+
+#    cur.execute("""SELECT oddelek_id FROM oddelek WHERE oddelek_ime = %s """,(oddelek,))
+#    oddelek_id = cur.fetchall()[0][0]
+#    print('tale id za oddelek:')
+#    print(oddelek_id)  
+
+   #cur.execute("""SELECT setval('gostje_gostje_id_seq', (SELECT MAX(gostje_id) FROM gostje)+1)""")
+
+   
+   cur.execute("""INSERT INTO gostje
+               (ime, priimek, kreditna_kartica, email, telefonska_stevilka, naslov_id)
+               VALUES (%s, %s, %s, %s, %s, %s)""", (ime, priimek, kreditna_kartica, email, telefonska_stevilka, naslov_id))
+   conn.commit()
+   conn.rollback()   
+   redirect(url('gostje'))
+
+
+@get('/izbrisi_gosta')
+def izbrisi_gosta():
+   return template('izbrisi_gosta.html', gostje_id='', ime='', priimek='', kreditna_kartica='', email='', telefonska_stevilka='', naslov_id='', napaka=None)
+
+
+@post('/izbrisi_gosta')
+def izbrisi_gosta_post():
+#    zaposleni_id = request.forms.zaposleni_id
+   ime = request.forms.ime
+   priimek = request.forms.priimek
+#    kreditna_kartica = request.forms.kreditna_kartica
+   telefonska_stevilka = request.forms.telefonska_stevilka
+#    email = request.forms.email
+#    mesto = request.forms.mesto
+#    drzava = request.forms.drzava
+#    posta = request.forms.posta
+   print(ime, priimek, telefonska_stevilka)
+
+   cur.execute("""DELETE FROM gostje
+                  WHERE (ime, priimek, telefonska_stevilka) = (%s, %s, %s)""", (ime, priimek, telefonska_stevilka))
+
+   conn.commit()
+   conn.rollback()   
+   redirect(url('gostje'))
+   
 
 ### SOBA
 

@@ -1,0 +1,39 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Izbriši gosta')
+% rebase('base.html', napaka=napaka, naslov=naslov)
+
+<form action="{{url('izbrisi_gosta')}}" method="post" autocomplete="off">
+
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="ime">Ime</label>
+        <input id="ime" name="ime" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="priimek">Priimek</label>
+        <input id="priimek" name="priimek" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="telefonska_stevilka">Telefonska številka</label>
+      <input id="telefonska_stevilka" name="telefonska_stevilka" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+     
+    </div>
+    <p><input type="submit" value="Izbriši"></p>
+  </form>

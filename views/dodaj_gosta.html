@@ -1,0 +1,91 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Dodaj gosta')
+% rebase('base.html', napaka=napaka, naslov=naslov)
+
+<form action="{{url('dodaj_gosta')}}" method="post" autocomplete="off">
+  <div>
+    <input type = "radio" name = "tip" value = "gost">Dodajam gosta v skladu z zakonom o varovanju osebnih podatkov.
+  </div>
+
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="ime">Ime</label>
+        <input id="ime" name="ime" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="priimek">Priimek</label>
+        <input id="priimek" name="priimek" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="kreditna_kartica">TRR</label>
+      <input id="kreditna_kartica" name="kreditna_kartica" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="telefonska_stevilka">Telefonska številka</label>
+      <input id="telefonska_stevilka" name="telefonska_stevilka" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="mesto">Mesto stalnega prebivališča:</label>
+        <input id="mesto" name="mesto" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+  
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="posta">Poštna številka:</label>
+        <input id="posta" name="posta" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="drzava">Država:</label>
+        <input id="drzava" name="drzava" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    
+    </div>
+    <p><input type="submit" value="Dodaj"></p>
+  </form>
