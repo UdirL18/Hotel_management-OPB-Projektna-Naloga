@@ -191,6 +191,7 @@ def odjava_get():
    redirect('/prijava')
 
 ### ZAPOSLENI
+
 @get('/zaposleni')
 def zaposleni():
     #cur = conn.cursor()
@@ -341,7 +342,7 @@ def gostje():
 #          (ime,priimek,telefonska_stevilka,email,naslov_id))
 #     redirect('/gostje')
 
-# ### SOBA
+### SOBA
 
 @get('/sobe')
 def sobe():
@@ -351,6 +352,30 @@ def sobe():
         JOIN hotel_podatki ON sobe.hotel_id=hotel_podatki.hotel_id""")
     cur.fetchone()
     return template('sobe.html', sobe=cur)
+
+### HOTELSKA STORITEV
+
+@get('/hotelske_storitve')
+def hotelske_storitve():
+    #cur = conn.cursor()
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT naziv_storitve,opis_storitve,cena_storitve,hotel_podatki.ime_hotela FROM hotelske_storitve
+        JOIN hotel_podatki ON hotelske_storitve.hotel_id=hotel_podatki.hotel_id
+        ORDER BY hotelske_storitve.cena_storitve""")
+    cur.fetchone()
+    return template('hotelske_storitve.html', hotelske_storitve=cur)
+
+@get('/uporabljene_storitve')
+def uporabljene_storitve():
+    #cur = conn.cursor()
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT hotelske_storitve.naziv_storitve, hotelske_storitve.opis_storitve, hotelske_storitve.cena_storitve, hotel_podatki.ime_hotela FROM uporabljene_storitve
+        JOIN hotelske_storitve ON uporabljene_storitve.hotelske_storitve_id=hotelske_storitve.hotelske_storitve_id
+        JOIN hotel_podatki ON hotelske_storitve.hotel_id=hotel_podatki.hotel_id
+        ORDER BY hotelske_storitve.cena_storitve""")
+    cur.fetchone()
+    return template('uporabljene_storitve.html', uporabljene_storitve=cur)
+
 
 
 # ### OSTALO
