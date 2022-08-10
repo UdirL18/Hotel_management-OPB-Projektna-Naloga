@@ -263,6 +263,45 @@ def dodaj_zaposlenega_post():
    redirect(url('zaposleni'))
 
 
+@get('/izbrisi_zaposlenega')
+def izbrisi_zaposlenega():
+   return template('izbrisi_zaposlenega.html', gostje_id='', ime='', priimek='', kreditna_kartica='', email='', telefonska_stevilka='', naslov_id='', napaka=None)
+
+
+@post('/izbrisi_zaposlenega')
+def izbrisi_zaposlenega_post():
+#    zaposleni_id = request.forms.zaposleni_id
+   ime = request.forms.ime
+   priimek = request.forms.priimek
+#    kreditna_kartica = request.forms.kreditna_kartica
+   telefonska_stevilka = request.forms.telefonska_stevilka
+#    email = request.forms.email
+#    mesto = request.forms.mesto
+#    drzava = request.forms.drzava
+#    posta = request.forms.posta
+   print(ime, priimek, telefonska_stevilka)
+
+   # izbrisati moram tudi vrstico v rezervacijah kjer je id zaposlenega
+   cur.execute("""SELECT zaposleni_id FROM zaposleni WHERE (ime, priimek, telefonska_stevilka) = (%s, %s, %s) """,(ime, priimek, telefonska_stevilka))
+   zaposleni_id = cur.fetchall()[0][0]
+   print('tale id za hotel:')
+   print(zaposleni_id)  
+
+   cur.execute("""DELETE FROM rezervacije
+                  WHERE zaposleni_id = %s""", (zaposleni_id,))
+   conn.commit()
+   conn.rollback() 
+
+   cur.execute("""DELETE FROM zaposleni
+                  WHERE (ime, priimek, telefonska_stevilka) = (%s, %s, %s)""", (ime, priimek, telefonska_stevilka))
+
+   conn.commit()
+   conn.rollback() 
+             
+
+   redirect(url('zaposleni'))
+
+
 #----------------------------------------------------------------------------------------
 # HOTELSKA VERIGA
 #-----------------------------------------------------------------------------------------
@@ -373,6 +412,17 @@ def izbrisi_gosta_post():
 #    drzava = request.forms.drzava
 #    posta = request.forms.posta
    print(ime, priimek, telefonska_stevilka)
+
+   # izbrisati moram tudi vrstico v rezervacijah kjer je id gosta
+   cur.execute("""SELECT gostje_id FROM gostje WHERE (ime, priimek, telefonska_stevilka) = (%s, %s, %s) """,(ime, priimek, telefonska_stevilka))
+   gostje_id = cur.fetchall()[0][0]
+   print('tale id brišem:')
+   print(gostje_id)  
+
+   cur.execute("""DELETE FROM rezervacije
+                  WHERE gostje_id = %s""", (gostje_id,))
+   conn.commit()
+   conn.rollback()
 
    cur.execute("""DELETE FROM gostje
                   WHERE (ime, priimek, telefonska_stevilka) = (%s, %s, %s)""", (ime, priimek, telefonska_stevilka))
