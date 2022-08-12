@@ -1,17 +1,20 @@
 #uvozimo bottle
-from ctypes import get_last_error
-from bottle import *
-from bottleext import *
-
 #import sqlite3
 import hashlib
 import os
+from ctypes import get_last_error
+from datetime import datetime
+
+# uvozimo psycopg2 - nalozi v ukaznem pozivu pip install psycopg2
+import psycopg2
+import psycopg2.extensions
+import psycopg2.extras
 
 #uvozimo potrebne podatke za povezavo
 import auth_public as auth
+from bottle import *
+from bottleext import *
 
-# uvozimo psycopg2 - nalozi v ukaznem pozivu pip install psycopg2
-import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
 
 #privzete nastavitve
@@ -163,7 +166,7 @@ def prijava_post():
    username = request.forms.username
    password = request.forms.password
    if (username=='') or (password==''):
-       nastaviSporocilo('Uporabniško ima in geslo morata biti neprazna') 
+       nastaviSporocilo('Uporabniško ime in geslo morata biti neprazna') 
        redirect('/prijava')
 
 #    cur = conn.cursor()    
@@ -438,12 +441,121 @@ def izbrisi_gosta_post():
 def sobe():
     #cur = conn.cursor()
     cur.execute("ROLLBACK")
-    cur.execute("""SELECT stevilka_sobe,tip_sobe_id,hotel_podatki.ime_hotela FROM sobe
-        JOIN hotel_podatki ON sobe.hotel_id=hotel_podatki.hotel_id""")
+    cur.execute("""SELECT stevilka_sobe,hotel_podatki.ime_hotela, tipi_sob.tip_sobe_opis FROM sobe
+            JOIN hotel_podatki ON sobe.hotel_id=hotel_podatki.hotel_id
+            JOIN tipi_sob ON sobe.tip_sobe_id=tipi_sob.tip_sobe_id""")
     cur.fetchone()
     return template('sobe.html', sobe=cur)
 
+# rezerviraj sobo
+# -naj izpise tabelo prostih sob - če je soba na seznamu rezervirane_sobe ni prosta,
+#   tabelo, ki jo izpise naj vklučuje tudi št postelj, opis sobe, ceno sobe, v katerem hotelu
+# -klikni na izbrano sobo da te vrže na stran rezerviraj
+# -v rezervaciji naj se podatki sobe shranijo sami, vpišeš le tip_plačila, datum_rezervacije - bi slo da to sam now(),
+#   st_rezerviranih_sob - naj izpolne program (vse bo 1), datum_check_in, datum_check_out,
+# -predn lahko zaposleni izvede registracijo naj vpiše svoje ime in priimek-da dobim zaposleni_id, 
+#   potem naj vpiše ime in priimek gosta, ki je že prijavljen, če ni naj ga registrira, da dobim gostje_id
+# -hotel_id naj se prebere iz podatkov izbrane sobe
+
+@get('/rezerviraj_sobo')
+def rezerviraj_sobo():
+   return template('rezerviraj_sobo.html', rezervacije_id = '', tip_placila = '', datum_rezervacije = '', st_rezerviranih_sob = '', datum_check_in = '', datum_check_out = '', zaposleni_id = '', gostje_id = '', hotel_id = '' )
+
+
+@get('/rezerviraj_sobo', methods=['GET', 'POST'])
+def rezerviraj_sobo():
+    print(request.method)
+    #cur = conn.cursor()
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT DISTINCT stevilka_sobe, tipi_sob.tip_sobe_opis, tipi_sob.tip_sobe_ime, tipi_sob.cena_sobe, tipi_sob.zivali, tipi_sob.kadilci, hotel_podatki.ime_hotela FROM sobe
+            JOIN hotel_podatki ON sobe.hotel_id=hotel_podatki.hotel_id
+            JOIN tipi_sob ON sobe.tip_sobe_id=tipi_sob.tip_sobe_id
+            WHERE soba_id NOT IN (SELECT DISTINCT sobe_id FROM rezervirane_sobe)""")
+    cur.fetchone()
+    return template('rezerviraj_sobo.html', sobe=cur)
+
+
+@get('/rezervacija')
+def rezervacija():
+   napaka = nastaviSporocilo()
+   cur.execute("ROLLBACK")
+   cur.execute("""SELECT ime_hotela FROM hotel_podatki""")
+   cur.fetchone()
+   return template('rezervacija.html', ime_zaposlenega='', priimek_zaposlenega='', ime_gosta='', priimek_gosta='', napaka=napaka, hotel=cur)
+
+def preveriZaposlenega(ime_zaposlenega, priimek_zaposlenega): 
+   cur.execute("""SELECT zaposleni_id FROM zaposleni WHERE (ime, priimek) = (%s, %s) """,(ime_zaposlenega, priimek_zaposlenega,))
+   zaposleni_id = cur.fetchall()
+   if len(zaposleni_id) == 0:
+    return False
+   return True
+
+def preveriGosta(ime_gosta, priimek_gosta): 
+   cur.execute("""SELECT gostje_id FROM gostje WHERE (ime, priimek) = (%s, %s ) """,(ime_gosta, priimek_gosta,))
+   gostje_id = cur.fetchall()
+   if len(gostje_id) == 0:
+    return False
+   return True   
+
+@post('/rezervacija')
+def rezervacija_post():
+   ime_zaposlenega = request.forms.ime_zaposlenega
+   priimek_zaposlenega = request.forms.priimek_zaposlenega
+   ime_gosta = request.forms.ime_gosta
+   priimek_gosta = request.forms.priimek_gosta
+   zaposlen = preveriZaposlenega(ime_zaposlenega, priimek_zaposlenega)
+   gost = preveriGosta(ime_gosta, priimek_gosta)
+   datum_rezervacije = datetime.today().strftime('%Y-%m-%d')
+   tip_placila = request.forms.tip_placila
+   datum_check_in = request.forms.datum_check_in
+   datum_check_out = request.forms.datum_check_out
+   st_rezerviranih_sob = 1
+   stevilka_sobe = request.forms.stevilka_sobe
+   ime_hotela = request.forms.ime_hotela
+
+
+   print(ime_zaposlenega, priimek_zaposlenega, ime_gosta, priimek_gosta, datum_rezervacije, tip_placila, datum_check_in, datum_check_out, st_rezerviranih_sob, stevilka_sobe, ime_hotela)
+
+   if not zaposlen:
+      nastaviSporocilo('Zaposleni ni na seznamu.')
+      redirect('/rezervacija')
+
+   if not gost:
+      nastaviSporocilo('Gost ni na seznamu.')
+      redirect('/rezervacija')    
+
+   cur.execute("""SELECT zaposleni_id FROM zaposleni WHERE (ime, priimek) = (%s, %s) """,(ime_zaposlenega, priimek_zaposlenega,))
+   zaposleni_id = cur.fetchall()[0][0]
+
+
+   cur.execute("""SELECT gostje_id FROM gostje WHERE (ime, priimek) = (%s, %s) """,(ime_gosta, priimek_gosta,))
+   gostje_id = cur.fetchall()[0][0]
+
+   cur.execute("""SELECT hotel_id FROM hotel_podatki WHERE ime_hotela = %s""",(ime_hotela.replace('_',' '),))
+   hotel_id = cur.fetchall()[0][0]
+   
+   cur.execute("""INSERT INTO rezervacije
+               (tip_placila, datum_rezervacije, st_rezerviranih_sob, datum_check_in, datum_check_out, zaposleni_id, gostje_id, hotel_id)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""", (tip_placila, datum_rezervacije, st_rezerviranih_sob, datum_check_in, datum_check_out, zaposleni_id, gostje_id, hotel_id))
+   conn.commit()
+   conn.rollback() 
+
+   cur.execute("""SELECT soba_id FROM sobe WHERE stevilka_sobe = %s""",(stevilka_sobe,))
+   sobe_id = cur.fetchall()[0][0]   
+
+   cur.execute("""SELECT rezervacije_id FROM rezervacije WHERE (tip_placila, datum_rezervacije, st_rezerviranih_sob, datum_check_in, datum_check_out, zaposleni_id, gostje_id, hotel_id) = (%s, %s, %s, %s, %s, %s, %s, %s)""",(tip_placila, datum_rezervacije, st_rezerviranih_sob, datum_check_in, datum_check_out, zaposleni_id, gostje_id, hotel_id))
+   rezervacije_id = cur.fetchall()[0][0]    
+
+   cur.execute("""INSERT INTO rezervirane_sobe
+               (rezervacije_id, sobe_id)
+               VALUES (%s, %s)""", (rezervacije_id, sobe_id))
+   conn.commit()
+   conn.rollback()   
+   redirect(url('sobe'))
+
+#-----------------------------------------------------------------------------------------------
 ### HOTELSKA STORITEV
+#------------------------------------------------------------------------------------------
 
 @get('/hotelske_storitve')
 def hotelske_storitve():

@@ -1,18 +1,18 @@
 % setdefault('napaka', '')
-% setdefault('naslov', 'Seznam rezerviranih sob')
+% setdefault('naslov', 'Seznam sob')
 % rebase('base.html', napaka=napaka, izbrani_zavihek='sobe')
 
-<table id="izpis" class="table table-striped">
+<table id="izpis" class="table table-striped"><a class="btn btn-primary" href="{{url('rezerviraj_sobo')}}"role="button">Rezervirane sobe</a>
     <tr>
       <th>Hotel</th>
       <th>Številka sobe</th>
       <th>Opis sobe</th>
     </tr>
-    %for (stevilka_sobe,tip_sobe_id,ime_hotela) in sobe:
+    %for (stevilka_sobe, ime_hotela, tip_sobe_opis) in sobe:
     <tr>
       <td>{{ime_hotela}}</td>
       <td>{{stevilka_sobe}}</td>
-      <td>{{tip_sobe_id}}</td>
+      <td>{{tip_sobe_opis}}</td>
     </tr>
     %end
 </table>

@@ -1,0 +1,117 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Rezervacija')
+% rebase('base.html', napaka=napaka, naslov=naslov)
+
+<form action="{{url('rezervacija')}}" method="post" autocomplete="off">
+  <!-- <div>
+    <input type = "radio" name = "tip" value = "gost">Dodajam gosta v skladu z zakonom o varovanju osebnih podatkov.
+  </div> -->
+  <div>Zaposleni prosim vpište vaše ime in priimek.</div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="ime_zaposlenega">Ime zaposlenega</label>
+        <input id="ime_zaposlenega" name="ime_zaposlenega" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="priimek_zaposlenega">Priimek zaposlenega</label>
+        <input id="priimek_zaposlenega" name="priimek_zaposlenega" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+
+  <div>Podatki gosta, ki želi rezervirati sobo.</div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="ime_gosta">Ime gosta</label>
+      <input id="ime_gosta" name="ime_gosta" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="priimek_gosta">Priimek gosta</label>
+      <input id="priimek_gosta" name="priimek_gosta" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="ime_hotela">Hotel:</label>
+      <select name="ime_hotela" id="ime_hotela">
+        % for hot in hotel:
+          <option value={{'_'.join(hot[0].split(' '))}}>{{hot[0]}}</option>
+        % end
+    
+      </select>
+    </div>
+  </div> 
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="stevilka_sobe">Številka sobe:</label>
+      <input id="stevilka_sobe" name="stevilka_sobe" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="tip_placila">Tip plačila</label>
+      <select name="tip_placila" id="tip_placila">
+        <option value="Gotovina">Gotovina</option>
+        <option value="Kartica">Kartica</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="datum_rezervacije">Datum rezervacije</label>
+      <input id="datum_rezervacije" name="datum_rezervacije" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        value=
+        />
+    </div>
+  </div> -->
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="datum_check_in">Datum prihoda</label>
+      <input id="datum_check_in" name="datum_check_in" type="date" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="datum_check_out">Datum odhoda:</label>
+        <input id="datum_check_out" name="datum_check_out" type="date" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    
+    </div>
+    <p><input type="submit" value="Dodaj"></p>
+  </form>
