@@ -67,6 +67,10 @@ def preveriUporabnika():
 @get('/')
 def index():
     return template('prijava.html')
+
+@get('/dashboard')
+def dashboard():
+    return template('dashboard.html')
 #------------------------------------------------
 
 
@@ -183,7 +187,7 @@ def prijava_post():
        
 
    response.set_cookie('username', username, secret=skrivnost)
-   redirect('/hotelska_veriga')
+   redirect('/dashboard')
     
 @get('/odjava')
 def odjava_get():
@@ -197,10 +201,11 @@ def odjava_get():
 def zaposleni():
     #cur = conn.cursor()
     cur.execute("ROLLBACK")
-    zaposleni = cur.execute("""SELECT ime,priimek,naziv,oddelek_id,naslov.mesto, naslov.posta, naslov.drzava,hotel_podatki.ime_hotela FROM Zaposleni
+    zaposleni = cur.execute("""SELECT ime,priimek,naziv,oddelek.oddelek_ime,naslov.mesto, naslov.posta, naslov.drzava,hotel_podatki.ime_hotela FROM Zaposleni
             JOIN naslov ON Zaposleni.naslov_id=naslov.naslov_id
             JOIN hotel_podatki ON Zaposleni.hotel_id=hotel_podatki.hotel_id
-            ORDER BY Zaposleni.priimek""")
+            JOIN oddelek ON Zaposleni.oddelek_id=oddelek.oddelek_id
+            ORDER BY Zaposleni.priimek, Zaposleni.ime""")
     cur.fetchone()
     return template('zaposleni.html', zaposleni=cur)
 
@@ -455,6 +460,63 @@ def hotelske_storitve():
     cur.fetchone()
     return template('hotelske_storitve.html', hotelske_storitve=cur)
 
+
+@get('/dodaj_storitev')
+def dodaj_storitev():
+   return template('dodaj_storitev.html',hotelske_storitve_id='',naziv_storitve='',opis_storitve='',cena_storitve='',hotel_id='', napaka=None)
+
+
+@post('/dodaj_storitev')
+def dodaj_storitev_post():
+   naziv_storitve = request.forms.naziv_storitve
+   opis_storitve = request.forms.opis_storitve
+   cena_storitve = request.forms.cena_storitve
+   hotel = request.forms.hotel
+                
+   conn.commit()
+   conn.rollback()
+
+   cur.execute("""SELECT hotel_id FROM hotel_podatki WHERE ime_hotela = %s """,(hotel,))
+   hotel_id = cur.fetchall()[0][0]
+
+   cur.execute("""INSERT INTO hotelske_storitve
+               (naziv_storitve, opis_storitve, cena_storitve, hotel_id)
+               VALUES (%s, %s, %s, %s)""", (naziv_storitve, opis_storitve, cena_storitve, hotel_id))
+   conn.commit()
+   conn.rollback()   
+   redirect(url('hotelske_storitve'))
+
+@get('/izbrisi_storitev')
+def izbrisi_storitev():
+   return template('izbrisi_storitev.html',hotelske_storitve_id='',naziv_storitve='',opis_storitve='',cena_storitve='',hotel_id='', napaka=None)
+
+@post('/izbrisi_storitev')
+def izbrisi_storitev_post():
+   naziv_storitve = request.forms.naziv_storitve
+   #opis_storitve = request.forms.opis_storitve
+   #cena_storitve = request.forms.cena_storitve
+   #hotel = request.forms.hotel
+
+   #cur.execute("""DELETE FROM Zaposleni WHERE hotel_id = %s""", (hotel_id))
+   #conn.commit()
+   #conn.rollback()
+   
+   #cur.execute("""DELETE FROM sobe WHERE hotel_id = %s""", (hotel_id))
+   #conn.commit()
+   #conn.rollback()
+   
+   #cur.execute("""DELETE FROM rezervacije WHERE hotel_id = %s""", (hotel_id))
+   #conn.commit()
+   #conn.rollback()
+   
+   cur.execute("""DELETE FROM hotelske_storitve WHERE naziv_storitve = %s""",(naziv_storitve))
+   conn.commit()
+   conn.rollback()   
+   redirect(url('hotelske_storitve'))
+
+
+### UPORABLJENE STORITVE
+
 @get('/uporabljene_storitve')
 def uporabljene_storitve():
     #cur = conn.cursor()
@@ -466,7 +528,28 @@ def uporabljene_storitve():
     cur.fetchone()
     return template('uporabljene_storitve.html', uporabljene_storitve=cur)
 
+@get('/uporabi_storitev')
+def uporabi_storitev():
+   return template('uporabi_storitev.html',hotelske_storitve_id='',naziv_storitve='',opis_storitve='',cena_storitve='',hotel_id='', napaka=None)
 
+
+@post('/uporabi_storitev')
+def uporabi_storitev_post():
+   hotelske_storitve= request.forms.hotelske_storitve
+                
+   conn.commit()
+   conn.rollback()
+
+   cur.execute("""SELECT hotelske_storitve_id FROM hotelske_storitve WHERE (naziv_storitve, opis_storitve, cena_storitve) = (%s, %s, %s) """,(hotelske_storitve,))
+   hotelske_storitve_id = cur.fetchall()[0][0]
+
+
+   cur.execute("""INSERT INTO uporabljene_storitve
+               (rezervacije_id, hotelske_storitve_id)
+               VALUES (%s, %s)""", (rezervacije_id, hotelske_storitve_id))
+   conn.commit()
+   conn.rollback()   
+   redirect(url('hotelske_storitve'))
 
 # ### OSTALO
 
