@@ -1,0 +1,21 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Izbriši hotelsko storitev')
+% rebase('base.html', napaka=napaka, naslov=naslov)
+
+<form action="{{url('izbrisi_storitev')}}" method="post" autocomplete="off">
+
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="naziv_storitve">Storitev, ki jo želite izbrisati</label>
+        <input id="naziv_storitve" name="naziv_storitve" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+
+    <div>
+      <p><input type="submit" value="Izbriši storitev"></p>
+    </div>
+    </div>
+</form>
