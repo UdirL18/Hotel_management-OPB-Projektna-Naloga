@@ -1,0 +1,65 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Dodaj hotelsko storitev')
+% rebase('base.html', napaka=napaka, naslov=naslov)
+
+<form action="{{url('dodaj_storitev')}}" method="post" autocomplete="off">
+
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="naziv_storitve">Storitev</label>
+        <input id="naziv_storitve" name="naziv_storitve" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+
+  <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="opis_storitve">Kratek opis storitve</label>
+        <input id="opis_storitve" name="opis_storitve" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="cena_storitve">Cena</label>
+      <input id="cena_storitve" name="cena_storitve" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="hotel_podatki">Izberi hotel izvajanja storitve</label>
+        <select name="hotel" id="hotel">
+            <option value="Common nighthawk">Common nighthawk</option>
+            <option value="Lemur, lesser mouse">Lemur, lesser mouse</option>
+            <option value="Eastern fox squirrel">Eastern fox squirrel</option>
+            <option value="Cormorant, flightless">Cormorant, flightless</option>
+            <option value="Emerald green tree boa">Emerald green tree boa</option>
+            <option value="Lemur, sportive">Lemur, sportive</option>
+            <option value="Javan gold-spotted mongoose">Javan gold-spotted mongoose</option>
+            <option value="Phalarope, northern">Phalarope, northern</option>
+            <option value="Dark-winged trumpeter">Dark-winged trumpeter</option>
+            <option value="Cobra, cape">Cobra, cape</option>
+            <option value="	Wagtail, african pied">	Wagtail, african pied</option>
+            <option value="Crane, black-crowned">Crane, black-crowned</option>
+            <option value="Nile crocodile">Nile crocodile</option>
+            <option value="Fox, crab-eating">Fox, crab-eating</option>
+            <option value="Turkey, common">Turkey, common</option>
+            <option value="Long-tailed skua">Long-tailed skua</option>
+        </select>
+    </div>
+  </div>
+    
+    <div>
+      <p><input type="submit" value="Dodaj storitev"></p>
+    </div>
+    </div>
+</form>
