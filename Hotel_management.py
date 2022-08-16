@@ -2,7 +2,7 @@
 #import sqlite3
 import hashlib
 import os
-from ctypes import get_last_error
+#from ctypes import get_last_error
 from datetime import datetime
 
 # uvozimo psycopg2 - nalozi v ukaznem pozivu pip install psycopg2
@@ -35,6 +35,7 @@ def nastaviSporocilo(sporocilo = None):
     else:
         response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
     return staro
+
 
 # Mapa za statične vire (slike, css, ...)
 static_dir = "./static"
@@ -73,7 +74,43 @@ def index():
 
 @get('/dashboard')
 def dashboard():
-    return template('dashboard.html')
+    return template('dashboard.html', dashboard=cur)
+
+@route('/dashboard')
+def dashboard():
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT COUNT(*) FROM hotelska_veriga""")
+    vsota = cur.fetchone()
+    
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT COUNT(*) FROM hotel_podatki""")
+    vsota1 = cur.fetchone()
+
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT COUNT(*) FROM zaposleni""")
+    vsota2 = cur.fetchone()
+
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT COUNT(*) FROM gostje""")
+    vsota3 = cur.fetchone()
+
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT COUNT(*) FROM sobe""")
+    vsota4 = cur.fetchone()
+
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT COUNT(*) FROM rezervirane_sobe""")
+    vsota5 = cur.fetchone()
+
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT COUNT(*) FROM hotelske_storitve""")
+    vsota7 = cur.fetchone()
+
+    cur.execute("ROLLBACK")
+    cur.execute("""SELECT COUNT(*) FROM uporabljene_storitve""")
+    vsota8 = cur.fetchone()
+
+    return template('dashboard.html', vsota=vsota, vsota1=vsota1, vsota2=vsota2, vsota3=vsota3, vsota4=vsota4, vsota5=vsota5,vsota7=vsota7,vsota8=vsota8)  # your template file is form1.tpl
 #------------------------------------------------
 
 
@@ -313,7 +350,6 @@ def izbrisi_zaposlenega_post():
 #----------------------------------------------------------------------------------------
 # HOTELSKA VERIGA
 #-----------------------------------------------------------------------------------------
-
 @get('/hotelska_veriga')
 def hotelska_veriga():
     # cur = conn.cursor()
@@ -604,10 +640,15 @@ def izbrisi_storitev():
 
 @post('/izbrisi_storitev')
 def izbrisi_storitev_post():
-   naziv_storitve = request.forms.naziv_storitve
+   nazivstoritve = request.forms.naziv_storitve
    #opis_storitve = request.forms.opis_storitve
    #cena_storitve = request.forms.cena_storitve
    #hotel = request.forms.hotel
+
+   print(request.forms.naziv_storitve)
+   cur.execute("""SELECT hotelske_storitve_id FROM hotelske_storitve WHERE naziv_storitve = %s""",(nazivstoritve,))
+   hotelske_storitve_id = cur.fetchall()[0][0]
+
 
    #cur.execute("""DELETE FROM Zaposleni WHERE hotel_id = %s""", (hotel_id))
    #conn.commit()
@@ -620,8 +661,12 @@ def izbrisi_storitev_post():
    #cur.execute("""DELETE FROM rezervacije WHERE hotel_id = %s""", (hotel_id))
    #conn.commit()
    #conn.rollback()
+
+   cur.execute("""DELETE FROM uporabljene_storitve WHERE hotelske_storitve_id = %s""", (hotelske_storitve_id,))
+   conn.commit()
+   conn.rollback()
    
-   cur.execute("""DELETE FROM hotelske_storitve WHERE naziv_storitve = %s""",(naziv_storitve))
+   cur.execute("""DELETE FROM hotelske_storitve WHERE naziv_storitve = %s""",(nazivstoritve,))
    conn.commit()
    conn.rollback()   
    redirect(url('hotelske_storitve'))
@@ -647,14 +692,21 @@ def uporabi_storitev():
 
 @post('/uporabi_storitev')
 def uporabi_storitev_post():
-   hotelske_storitve= request.forms.hotelske_storitve
+   rezervacije_id = request.forms.rezervacije_id
+   hotelske_storitve_id= request.forms.hotelske_storitve_id
                 
    conn.commit()
    conn.rollback()
 
-   cur.execute("""SELECT hotelske_storitve_id FROM hotelske_storitve WHERE (naziv_storitve, opis_storitve, cena_storitve) = (%s, %s, %s) """,(hotelske_storitve,))
+   cur.execute("""SELECT rezervacije_id FROM rezervacije WHERE rezervacije_id = %s""",(rezervacije_id,))
+   rezervacije_id = cur.fetchall()[0][0]
+
+
+   cur.execute("""SELECT hotelske_storitve_id FROM hotelske_storitve WHERE (hotelske_storitve_id) = %s """,(hotelske_storitve_id,))
    hotelske_storitve_id = cur.fetchall()[0][0]
 
+   conn.commit()
+   conn.rollback()
 
    cur.execute("""INSERT INTO uporabljene_storitve
                (rezervacije_id, hotelske_storitve_id)
