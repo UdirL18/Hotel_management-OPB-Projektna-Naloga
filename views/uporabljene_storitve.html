@@ -2,6 +2,8 @@
 % setdefault('naslov', 'Seznam uporabljenih storitev')
 % rebase('base.html', napaka=napaka)
 
+%dobicek_storitve = 0
+
 <table id="izpis" class="table table-striped">
   <a class="registerbtn" href="{{url('hotelske_storitve')}}"role="button">Seznam hotelskih storitev</a>
   <a class="registerbtn" href="{{url('uporabi_storitev')}}"role="button">Koristi storitev</a>
@@ -12,6 +14,7 @@
       <th>Cena</th>
     </tr>
     %for (naziv_storitve,opis_storitve,cena_storitve,ime_hotela) in uporabljene_storitve:
+    %dobicek_storitve+=cena_storitve
     <tr>
       <td>{{naziv_storitve}}</td>
       <td>{{opis_storitve}}</td>
@@ -21,16 +24,4 @@
     %end
 </table>
 
-<script language="javascript" type="text/javascript">
-            
-    var table = document.getElementById("izpis"), sumVal = 0;
-    
-    for(var i = 1; i < table.rows.length; i++)
-    {
-        sumVal = sumVal + parseInt(table.rows[i].cells[3].innerHTML);
-    }
-    
-    document.getElementById("val").innerHTML = "Sum Value = " + sumVal;
-    console.log(sumVal);
-    
-</script>
+Dobiček storitev: {{dobicek_storitve}} €

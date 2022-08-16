@@ -1,19 +1,115 @@
 % setdefault('napaka', '')
-% setdefault('naslov', 'Seznam hotelov')
-% rebase('base.html', napaka=napaka, izbrani_zavihek='hotel')
+% setdefault('naslov', 'Splošno')
+% rebase('base.html', vsota=vsota, vsota1=vsota1,vsota2=vsota2, vsota3=vsota3, vsota4=vsota4, vsota5=vsota5,vsota7=vsota7,vsota8=vsota8, izbrani_zavihek='dashboard')
 
-<script> 
-  localStorage.getItem("vsota1")
-  getElementById("vsota1").innerHTML = "Sum Value = " + vsota1 
-</script>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  .row {
+    margin-left:-5px;
+    margin-right:-5px;
+  }
+    
+  .column {
+    float: left;
+    width: 50%;
+    padding: 5px;
+  }
+  
+  /* Clearfix (clear floats) */
+  .row::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 14px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  </style>
 
-Dobiček:
-Število hotelskih verig:
-Število hotelov: 
-Število zaposlenih:
-Število gostov:
-Število sob:
-Število rezerviranih sob:
-Število prostih sob:
-Število hotelskih storitev:
-Število uporabljenih storitev:
+  <div class="row">
+    <div class="column">
+      <table>
+        <tr>
+          <td>Število hotelskih verig:</td>
+          <td>{{vsota[0]}}</td>
+        </tr>
+        <tr>
+          <td>Število hotelov:</td>
+          <td>{{vsota1[0]}}</td>
+        </tr>
+        <tr>
+          <td>Število zaposlenih:</td>
+          <td>{{vsota2[0]}}</td>
+        </tr>
+        <tr>
+          <td>Število gostov:</td>
+          <td>{{vsota3[0]}}</td>
+        </tr>
+        <tr>
+          <td>Število sob:</td>
+          <td>{{vsota4[0]}}</td>
+        </tr>
+        <tr>
+          <td>Število rezerviranih sob:</td>
+          <td>{{vsota5[0]}}</td>
+        </tr>
+        <tr>
+          <td>Število hotelskih storitev:</td>
+          <td>{{vsota7[0]}}</td>
+          <tr>
+            <td>Število uporabljenih storitev:</td>
+            <td>{{vsota8[0]}}</td>
+          </tr>
+        </tr>
+      </table>
+    </div>
+
+  <div class="column">
+    <table>
+      <tr>
+        <td>
+          <b>
+            KATJA; Slovenija
+          </b>
+          "Prijazna in skrbna lastnica, počutili smo se prijetno in domače. Apartma je bil prostoren, okolica pa mirna in primerna za počitek, še posebej velik vrt pred apartmaji, ki je skrit pred pogledi z ulice, nudi pa čudovit razgled na morje in okolico.  Psička je lahko bila z nami."
+        </td>
+        <td>
+          <b>
+            PATRICK; Canada
+          </b>
+          "The Cabins were nice. Staff was great. They gave us free fire starter and a lighter for our campfire. They had a shared lodge to keep food cold in a fridge or freezer. It also had kettles, a stove, and coffeemaker for us to use. The bathrooms and showers were very clean for a campground."
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>
+            GARETH; Velika Britanija
+          </b>
+          "The property was exactly how it was described. Bedroom, bathroom, living area and kitchen were spotless. Gardens were well taken cared for with sitting areas to relax in. Hosts were really friendly and informative about the location."
+        </td>
+        <td>
+          <b>
+            ROSE; Francija
+          </b>
+          “Great place to spend a few days. Pool was rather cold and the playground needs some repairs; otherwise everything was great. We will be returning. Great value for the money! Affordable for families!”
+        </td>
+      </tr>
+    </table>
+  </div>
+  </div>

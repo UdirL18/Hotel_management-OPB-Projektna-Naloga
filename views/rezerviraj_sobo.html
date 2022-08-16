@@ -1,8 +1,12 @@
 % setdefault('napaka', '')
-% setdefault('naslov', 'Seznam prostih sob')
+% setdefault('naslov', 'Seznam rezerviranih sob')
 % rebase('base.html', napaka=napaka, naslov=naslov)
 
-<form action="{{url('rezerviraj_sobo')}}" method="get" autocomplete="off"></form><a class="btn btn-primary" href="{{url('rezervacija')}}"role="button">Rezerviraj sobo</a>
+%dobicek = 0
+
+<form action="{{url('rezerviraj_sobo')}}" method="get" autocomplete="off"></form>
+<a class="registerbtn" href="{{url('sobe')}}"role="button">Seznam sob</a>
+<a class="registerbtn" href="{{url('rezervacija')}}"role="button">Rezerviraj sobo</a>
 <table id="izpis" class="table table-striped">
     <tr>
       <!-- <th>Rezerviraj</th> -->
@@ -15,6 +19,7 @@
       <th>Ime hotela</th>
     </tr>
     %for (stevilka_sobe, tip_sobe_opis, tip_sobe_ime, cena_sobe, zivali, kadilci, ime_hotela) in sobe:
+    % dobicek += cena_sobe
     <tr>
       <td>{{stevilka_sobe}}</td>
       <td>{{tip_sobe_opis}}</td>
@@ -37,4 +42,5 @@
     %end
 </table>
 
+Dobiček: {{dobicek}} €
 

@@ -2,6 +2,8 @@
 % setdefault('naslov', 'Seznam hotelskih verig')
 % rebase('base.html', napaka=napaka, izbrani_zavihek='hotelska_veriga')
 
+%vsota1 = 0
+
 <table id="izpis" class="table table-striped">
   <tr>
     <th>Ime</th>
@@ -10,6 +12,7 @@
     <th>Spletna stran</th>
   </tr>
   %for (ime_hotelske_verige, mesto, posta, drzava, email_hotelske_verige, spletna_stran) in hotelska_veriga:
+  %vsota1 +=1
   <tr>
     <td>{{ime_hotelske_verige}}</td>
     <td>{{mesto}} {{posta}} {{drzava}}</td>
@@ -19,9 +22,4 @@
   %end
 </table>
 
-% vsota1 = 0
-% for hotelska_veriga_id in hotelska_veriga:
-% vsota1 += 1
-% end
 
-<script> localStorage.setItem("vsota1") </script>

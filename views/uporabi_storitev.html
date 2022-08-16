@@ -3,4 +3,33 @@
 % rebase('base.html', napaka=napaka, naslov=naslov)
 
 <form action="{{url('uporabi_storitev')}}" method="post" autocomplete="off">
+
     
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="rezervacije_id">Id rezervacije</label>
+      <input id="rezervacije_id" name="rezervacije_id" type="number" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+</div>
+
+
+<div class="form-row">
+  <div class="form-group col-md-6">
+    <label for="hotelske_storitve_id">Id hotelske storitve</label>
+    <input id="hotelske_storitve_id" name="hotelske_storitve_id" type="number" class="form-control" required
+      oninput="this.setCustomValidity('')"
+      oninvalid="this.setCustomValidity('Obvezno polje')"
+      />
+  </div>
+</div>
+
+
+  
+  <div>
+    <p><input type="submit" value="Koristi hotelsko storitev"></p>
+  </div>
+  </div>
+</form>
