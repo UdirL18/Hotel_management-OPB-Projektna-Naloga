@@ -57,7 +57,7 @@ def preveriUporabnika():
            uporabnik = None
        if uporabnik: 
            return uporabnik
-   redirect('/prijava')
+   redirect(url('prijava'))
 
 #------------------------------------------------
 #FUNKCIJE ZA IZGRADNJO STRANI
