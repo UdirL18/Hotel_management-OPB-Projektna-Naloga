@@ -193,7 +193,7 @@ def registracija_post():
 
     response.set_cookie('username', username, secret=skrivnost)
     print('vrzem vas na zaposlene')
-    redirect('/prijava')
+    redirect(url('prijava'))
 
 
 
@@ -208,7 +208,7 @@ def prijava_post():
    password = request.forms.password
    if (username=='') or (password==''):
        nastaviSporocilo('Uporabniško ime in geslo morata biti neprazna') 
-       redirect('/prijava')
+       redirect(url('prijava'))
 
 #    cur = conn.cursor()    
 #    hashconn = None
@@ -219,20 +219,20 @@ def prijava_post():
    except:
         conn.rollback()
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        redirect('/prijava')
+        redirect(url('prijava'))
 
    if hashGesla(password) != hashconn:
        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-       redirect('/prijava')
+       redirect(url('prijava'))
        
 
    response.set_cookie('username', username, secret=skrivnost)
-   redirect('/dashboard')
+   redirect(url('dashboard'))
     
 @get('/odjava')
 def odjava_get():
    response.delete_cookie('username')
-   redirect('/prijava')
+   redirect(url('prijava'))
 #-----------------------------------------------------------------------------------------
 # ZAPOSLENI
 #-----------------------------------------------------------------------------------------
@@ -251,7 +251,13 @@ def zaposleni():
 
 @get('/dodaj_zaposlenega')
 def dodaj_zaposlenega():
-   return template('dodaj_zaposlenega.html', zaposleni_id='', ime='', priimek='', naziv='', telefonska_stevilka='', email='', oddelek_id='', naslov_id='', hotel_id='', username='', password='', napaka=None)
+    cur.execute("SELECT hotel_id, ime_hotela FROM hotel_podatki")
+    hoteli = cur.fetchall()
+    cur.execute("SELECT oddelek_id, oddelek_ime FROM oddelek")
+    oddelki = cur.fetchall()
+    return template('dodaj_zaposlenega.html', hoteli=hoteli, oddelki=oddelki, zaposleni_id='',
+                    ime='', priimek='', naziv='', telefonska_stevilka='', email='', oddelek_id='',
+                    naslov_id='', hotel_id='', username='', password='', napaka=None)
 
 @post('/dodaj_zaposlenega')
 def dodaj_zaposlenega_post():
@@ -559,11 +565,11 @@ def rezervacija_post():
 
    if not zaposlen:
       nastaviSporocilo('Zaposleni ni na seznamu.')
-      redirect('/rezervacija')
+      redirect(url('rezervacija'))
 
    if not gost:
       nastaviSporocilo('Gost ni na seznamu.')
-      redirect('/rezervacija')    
+      redirect(url('rezervacija'))    
 
    cur.execute("""SELECT zaposleni_id FROM zaposleni WHERE (ime, priimek) = (%s, %s) """,(ime_zaposlenega, priimek_zaposlenega,))
    zaposleni_id = cur.fetchall()[0][0]
@@ -687,7 +693,9 @@ def uporabljene_storitve():
 
 @get('/uporabi_storitev')
 def uporabi_storitev():
-   return template('uporabi_storitev.html',hotelske_storitve_id='',naziv_storitve='',opis_storitve='',cena_storitve='',hotel_id='', napaka=None)
+    cur.execute("SELECT hotelske_storitve_id, naziv_storitve FROM hotelske_storitve")
+    nazivi = cur.fetchall()
+    return template('uporabi_storitev.html', nazivi=nazivi, hotelske_storitve_id='',naziv_storitve='',opis_storitve='',cena_storitve='',hotel_id='', napaka=None)
 
 
 @post('/uporabi_storitev')
@@ -735,3 +743,4 @@ cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) #za pogovarjanje z 
 if __name__ == "__main__":
     run(host='localhost', port=SERVER_PORT, reloader=RELOADER)
     print('test')
+
