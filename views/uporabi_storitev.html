@@ -18,11 +18,12 @@
 
 <div class="form-row">
   <div class="form-group col-md-6">
-    <label for="hotelske_storitve_id">Id hotelske storitve</label>
-    <input id="hotelske_storitve_id" name="hotelske_storitve_id" type="number" class="form-control" required
-      oninput="this.setCustomValidity('')"
-      oninvalid="this.setCustomValidity('Obvezno polje')"
-      />
+    <label for="hotelske_storitve_id">Hotelska storitev</label>
+    <select name="hotelske_storitve_id" id="hotelske_storitve_id">
+      %for id, naziv_storitve in nazivi:
+      <option value="{{id}}">{{naziv_storitve}}</option>
+      %end
+    </select>
   </div>
 </div>
 
