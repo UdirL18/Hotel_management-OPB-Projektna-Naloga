@@ -57,7 +57,7 @@ def preveriUporabnika():
            uporabnik = None
        if uporabnik: 
            return uporabnik
-   redirect(url('prijava'))
+   redirect('/prijava')
 
 #------------------------------------------------
 #FUNKCIJE ZA IZGRADNJO STRANI
@@ -146,7 +146,7 @@ def registracija_post():
     #uporabnik = None #  to je mal brezveze
     # try: 
     try:
-        cur.execute(f"SELECT * FROM zaposleni WHERE ime = \'{ime}\'")
+        cur.execute("SELECT * FROM zaposleni WHERE ime = %s", (ime,))
         uporabnik = cur.fetchone()
         print(uporabnik)
     except Exception:
@@ -178,12 +178,12 @@ def registracija_post():
         # cur.execute("""INSERT INTO zaposleni
         #             (ime, username, password)
         #             VALUES (%s, %s, %s)""", (ime, username, zgostitev))
-        cur.execute(f"""UPDATE zaposleni
+        cur.execute("""UPDATE zaposleni
                         SET
-                            username = \'{username}\',
-                            password = \'{zgostitev}\'
+                            username = %s,
+                            password = %s
                         WHERE
-                            ime = \'{ime}\'""")
+                            ime = %s""", (username, zgostitev, ime,))
         conn.commit()
     except Exception as e:
         print(e)
@@ -193,7 +193,7 @@ def registracija_post():
 
     response.set_cookie('username', username, secret=skrivnost)
     print('vrzem vas na zaposlene')
-    redirect(url('prijava'))
+    redirect('/prijava')
 
 
 
@@ -208,7 +208,7 @@ def prijava_post():
    password = request.forms.password
    if (username=='') or (password==''):
        nastaviSporocilo('Uporabniško ime in geslo morata biti neprazna') 
-       redirect(url('prijava'))
+       redirect('/prijava')
 
 #    cur = conn.cursor()    
 #    hashconn = None
@@ -219,20 +219,20 @@ def prijava_post():
    except:
         conn.rollback()
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        redirect(url('prijava'))
+        redirect('/prijava')
 
    if hashGesla(password) != hashconn:
        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-       redirect(url('prijava'))
+       redirect('/prijava')
        
 
    response.set_cookie('username', username, secret=skrivnost)
-   redirect(url('dashboard'))
+   redirect('/dashboard')
     
 @get('/odjava')
 def odjava_get():
    response.delete_cookie('username')
-   redirect(url('prijava'))
+   redirect('/prijava')
 #-----------------------------------------------------------------------------------------
 # ZAPOSLENI
 #-----------------------------------------------------------------------------------------
@@ -277,11 +277,40 @@ def dodaj_zaposlenega_post():
 #    password2 = hashGesla(password2)
    print(ime, priimek, naziv, mesto, posta, drzava, telefonska_stevilka, email, oddelek)
    
-   cur.execute("""INSERT INTO naslov
-                (mesto, posta, drzava)
-                VALUES (%s, %s, %s)""", (mesto, posta, drzava))
-   conn.commit()
-   conn.rollback()
+#    cur.execute("""INSERT INTO naslov
+#                 (mesto, posta, drzava)
+#                 VALUES (%s, %s, %s)
+#                 RETURNING naslov_id""",
+#                 (mesto, posta, drzava))
+#    conn.commit()
+#    conn.rollback()
+
+   try:
+      cur.execute("""INSERT INTO naslov 
+
+                   (mesto, posta, drzava)
+
+                   VALUES (%s, %s, %s)
+
+                   RETURNING naslov_id""",
+
+                (mesto, posta, drzava))
+      #print(naslov)
+      naslov_id, = cur.fetchone()
+
+      conn.commit() # lahko se zgodi tudi kasneje, po dodajanju zaposlenega/gosta
+
+   except psycopg2.DatabaseError:
+
+      conn.rollback()
+
+      cur.execute("""SELECT naslov_id FROM naslov
+
+                   WHERE mesto = %s AND posta = %s AND drzava = %s""",
+
+                   (mesto, posta, drzava))
+
+      naslov_id, = cur.fetchone()
 
 
 #    cur.execute("""INSERT INTO naslov
@@ -292,23 +321,28 @@ def dodaj_zaposlenega_post():
 
 #    print('insertov sem oddelek')
 
-   cur.execute("""SELECT naslov_id FROM naslov WHERE mesto = %s """,(mesto,))
-   naslov_id = cur.fetchall()[0][0]
+#    cur.execute("""SELECT naslov_id FROM naslov WHERE mesto = %s """,(mesto,))
+#    naslov_id = cur.fetchall()[0][0]
 
-   cur.execute("""SELECT hotel_id FROM hotel_podatki WHERE ime_hotela = %s """,(hotel,))
-   hotel_id = cur.fetchall()[0][0]
-   print('tale id za hotel:')
-   print(hotel_id)
+#    print('v tem hotelu dela')
+#    print(hotel)
+#    cur.execute("""SELECT hotel_id FROM hotel_podatki WHERE ime_hotela = %s """,(hotel,))
+#    hotel_id = cur.fetchall()#[0][0]
+#    print('tale id za hotel:')
+#    print(hotel_id)
 
-   cur.execute("""SELECT oddelek_id FROM oddelek WHERE oddelek_ime = %s """,(oddelek,))
-   oddelek_id = cur.fetchall()[0][0]
-   print('tale id za oddelek:')
-   print(oddelek_id)   
+
+#    print('na tem oddelku dela')
+#    print(oddelek)
+#    cur.execute("""SELECT oddelek_id FROM oddelek WHERE oddelek_ime = %s """,(oddelek,))
+#    oddelek_id = cur.fetchall()#[0][0]
+#    print('tale id za oddelek:')
+#    print(oddelek_id)   
 
    
    cur.execute("""INSERT INTO zaposleni
                (ime, priimek, naziv, naslov_id, hotel_id, oddelek_id, telefonska_stevilka, email)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s )""", (ime, priimek, naziv, naslov_id, hotel_id, oddelek_id, telefonska_stevilka, email))
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s )""", (ime, priimek, naziv, naslov_id, hotel, oddelek, telefonska_stevilka, email))
    conn.commit()
    conn.rollback()   
    redirect(url('zaposleni'))
@@ -414,15 +448,42 @@ def dodaj_gosta_post():
    posta = request.forms.posta
    print(ime, priimek, kreditna_kartica, mesto, posta, drzava, telefonska_stevilka, email)
    
-   cur.execute("""INSERT INTO naslov 
-                (mesto, posta, drzava) 
-                VALUES (%s, %s, %s)""", (mesto, posta, drzava))
+#    cur.execute("""INSERT INTO naslov 
+#                 (mesto, posta, drzava) 
+#                 VALUES (%s, %s, %s)""", (mesto, posta, drzava))
                 
-   conn.commit()
-   conn.rollback()
+#    conn.commit()
+#    conn.rollback()
 
-   cur.execute("""SELECT naslov_id FROM naslov WHERE mesto = %s """,(mesto,))
-   naslov_id = cur.fetchall()[0][0]
+#    cur.execute("""SELECT naslov_id FROM naslov WHERE mesto = %s """,(mesto,))
+#    naslov_id = cur.fetchall()[0][0]
+
+   try:
+      cur.execute("""INSERT INTO naslov 
+
+                   (mesto, posta, drzava)
+
+                   VALUES (%s, %s, %s)
+
+                   RETURNING naslov_id""",
+
+                (mesto, posta, drzava))
+      #print(naslov)
+      naslov_id, = cur.fetchone()
+
+      conn.commit() # lahko se zgodi tudi kasneje, po dodajanju zaposlenega/gosta
+
+   except psycopg2.DatabaseError:
+
+      conn.rollback()
+
+      cur.execute("""SELECT naslov_id FROM naslov
+
+                   WHERE mesto = %s AND posta = %s AND drzava = %s""",
+
+                   (mesto, posta, drzava))
+
+      naslov_id, = cur.fetchone()
 
 #    cur.execute("""SELECT hotel_id FROM hotel_podatki WHERE ime_hotela = %s """,(hotel,))
 #    hotel_id = cur.fetchall()[0][0]
