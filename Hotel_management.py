@@ -232,7 +232,7 @@ def prijava_post():
 @get('/odjava')
 def odjava_get():
    response.delete_cookie('username')
-   redirect(url('prijava'))
+   redirect(url('prijava_get'))
 #-----------------------------------------------------------------------------------------
 # ZAPOSLENI
 #-----------------------------------------------------------------------------------------
