@@ -57,7 +57,7 @@ def preveriUporabnika():
            uporabnik = None
        if uporabnik: 
            return uporabnik
-   redirect('/prijava')
+   redirect(url('prijava'))
 
 #------------------------------------------------
 #FUNKCIJE ZA IZGRADNJO STRANI
@@ -72,11 +72,11 @@ def preveriUporabnika():
 def index():
     return template('prijava.html')
 
-@get('/dashboard')
+@get(url('dashboard'))
 def dashboard():
     return template('dashboard.html', dashboard=cur)
 
-@route('/dashboard')
+@route(url('dashboard'))
 def dashboard():
     cur.execute("ROLLBACK")
     cur.execute("""SELECT COUNT(*) FROM hotelska_veriga""")
@@ -123,12 +123,12 @@ def hashGesla(s):
     m.update(s.encode("utf-8"))
     return m.hexdigest()
 
-@get('/registracija')
+@get(url('registracija'))
 def registracija_get():
     napaka = nastaviSporocilo()
     return template('registracija.html', napaka=napaka)
 
-@post('/registracija')
+@post(url('registracija'))
 def registracija_post():
     ime = request.forms.ime
     username = request.forms.username
@@ -139,7 +139,7 @@ def registracija_post():
 
     if (ime == '') or (username == '') or (password == '') or (password2 == ''): 
         nastaviSporocilo('Registracija ni možna, ker dobim prazen string.') 
-        #redirect('/registracija')
+        #redirect(url('registracija'))
         redirect(url('registracija_get'))
         #return None #  brezveze
     # cur = conn.cursor()     # je že vspostavljen ne rabim še enkrat
@@ -153,23 +153,23 @@ def registracija_post():
         conn.rollback()
         # nared neki če ga ni
         nastaviSporocilo('Registracija ni možna, uporabnik ni v bazi.') 
-        #redirect('/registracija')
+        #redirect(url('registracija'))
         redirect(url('registracija_get'))
     #     print(e)
     #     uporabnik = None
     # if uporabnik is None:
     #     nastaviSporocilo('Registracija ni možna, uporabnik ni v bazi.') 
-    #     #redirect('/registracija')
+    #     #redirect(url('registracija'))
     #     redirect(url('registracija_get'))
     #     return
     if len(password) < 4:
         nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
-        #redirect('/registracija')
+        #redirect(url('registracija'))
         redirect(url('registracija_get'))
 
     if password != password2:
         nastaviSporocilo('Gesli se ne ujemata.') 
-        #redirect('/registracija')
+        #redirect(url('registracija'))
         redirect(url('registracija_get'))
 
     zgostitev = hashGesla(password)
@@ -188,27 +188,27 @@ def registracija_post():
     except Exception as e:
         print(e)
         conn.rollback()
-        #redirect('/registracija')
+        #redirect(url('registracija'))
         redirect(url('registracija_get'))
 
     response.set_cookie('username', username, secret=skrivnost)
     print('vrzem vas na zaposlene')
-    redirect('/prijava')
+    redirect(url('prijava'))
 
 
 
-@get('/prijava')
+@get(url('prijava'))
 def prijava_get():
    napaka = nastaviSporocilo()
    return template('prijava.html', napaka=napaka)
 
-@post('/prijava')
+@post(url('prijava'))
 def prijava_post():
    username = request.forms.username
    password = request.forms.password
    if (username=='') or (password==''):
        nastaviSporocilo('Uporabniško ime in geslo morata biti neprazna') 
-       redirect('/prijava')
+       redirect(url('prijava'))
 
 #    cur = conn.cursor()    
 #    hashconn = None
@@ -219,25 +219,25 @@ def prijava_post():
    except:
         conn.rollback()
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        redirect('/prijava')
+        redirect(url('prijava'))
 
    if hashGesla(password) != hashconn:
        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-       redirect('/prijava')
+       redirect(url('prijava'))
        
 
    response.set_cookie('username', username, secret=skrivnost)
-   redirect('/dashboard')
+   redirect(url('dashboard'))
     
-@get('/odjava')
+@get(url('odjava'))
 def odjava_get():
    response.delete_cookie('username')
-   redirect('/prijava')
+   redirect(url('prijava'))
 #-----------------------------------------------------------------------------------------
 # ZAPOSLENI
 #-----------------------------------------------------------------------------------------
 
-@get('/zaposleni')
+@get(url('zaposleni'))
 def zaposleni():
     #cur = conn.cursor()
     cur.execute("ROLLBACK")
@@ -249,7 +249,7 @@ def zaposleni():
     cur.fetchone()
     return template('zaposleni.html', zaposleni=cur)
 
-@get('/dodaj_zaposlenega')
+@get(url('dodaj_zaposlenega'))
 def dodaj_zaposlenega():
     cur.execute("SELECT hotel_id, ime_hotela FROM hotel_podatki")
     hoteli = cur.fetchall()
@@ -259,7 +259,7 @@ def dodaj_zaposlenega():
                     ime='', priimek='', naziv='', telefonska_stevilka='', email='', oddelek_id='',
                     naslov_id='', hotel_id='', username='', password='', napaka=None)
 
-@post('/dodaj_zaposlenega')
+@post(url('dodaj_zaposlenega'))
 def dodaj_zaposlenega_post():
 #    zaposleni_id = request.forms.zaposleni_id
    ime = request.forms.ime
@@ -348,12 +348,12 @@ def dodaj_zaposlenega_post():
    redirect(url('zaposleni'))
 
 
-@get('/izbrisi_zaposlenega')
+@get(url('izbrisi_zaposlenega'))
 def izbrisi_zaposlenega():
    return template('izbrisi_zaposlenega.html', gostje_id='', ime='', priimek='', kreditna_kartica='', email='', telefonska_stevilka='', naslov_id='', napaka=None)
 
 
-@post('/izbrisi_zaposlenega')
+@post(url('izbrisi_zaposlenega'))
 def izbrisi_zaposlenega_post():
 #    zaposleni_id = request.forms.zaposleni_id
    ime = request.forms.ime
@@ -390,7 +390,7 @@ def izbrisi_zaposlenega_post():
 #----------------------------------------------------------------------------------------
 # HOTELSKA VERIGA
 #-----------------------------------------------------------------------------------------
-@get('/hotelska_veriga')
+@get(url('hotelska_veriga'))
 def hotelska_veriga():
     # cur = conn.cursor()
     cur.execute("ROLLBACK")
@@ -404,7 +404,7 @@ def hotelska_veriga():
 # HOTEL
 #------------------------------------------------------------------------------------------
 
-@get('/hotel')
+@get(url('hotel'))
 def hotel():
     #cur = conn.cursor()
     cur.execute("ROLLBACK")
@@ -420,7 +420,7 @@ def hotel():
 # GOST
 #---------------------------------------------------------------------------------------
 
-@get('/gostje')
+@get(url('gostje'))
 def gostje():
     #cur = conn.cursor()
     cur.execute("ROLLBACK")
@@ -430,12 +430,12 @@ def gostje():
     cur.fetchone()
     return template('gostje.html', gostje=cur)
 
-@get('/dodaj_gosta')
+@get(url('dodaj_gosta'))
 def dodaj_gosta():
    return template('dodaj_gosta.html', gostje_id='', ime='', priimek='', kreditna_kartica='', email='', telefonska_stevilka='', naslov_id='', napaka=None)
 
 
-@post('/dodaj_gosta')
+@post(url('dodaj_gosta'))
 def dodaj_gosta_post():
 #    zaposleni_id = request.forms.zaposleni_id
    ime = request.forms.ime
@@ -506,12 +506,12 @@ def dodaj_gosta_post():
    redirect(url('gostje'))
 
 
-@get('/izbrisi_gosta')
+@get(url('izbrisi_gosta'))
 def izbrisi_gosta():
    return template('izbrisi_gosta.html', gostje_id='', ime='', priimek='', kreditna_kartica='', email='', telefonska_stevilka='', naslov_id='', napaka=None)
 
 
-@post('/izbrisi_gosta')
+@post(url('izbrisi_gosta'))
 def izbrisi_gosta_post():
 #    zaposleni_id = request.forms.zaposleni_id
    ime = request.forms.ime
@@ -545,7 +545,7 @@ def izbrisi_gosta_post():
 
 ### SOBA
 
-@get('/sobe')
+@get(url('sobe'))
 def sobe():
     #cur = conn.cursor()
     cur.execute("ROLLBACK")
@@ -565,12 +565,12 @@ def sobe():
 #   potem naj vpiše ime in priimek gosta, ki je že prijavljen, če ni naj ga registrira, da dobim gostje_id
 # -hotel_id naj se prebere iz podatkov izbrane sobe
 
-@get('/rezerviraj_sobo')
+@get(url('rezerviraj_sobo'))
 def rezerviraj_sobo():
    return template('rezerviraj_sobo.html', rezervacije_id = '', tip_placila = '', datum_rezervacije = '', st_rezerviranih_sob = '', datum_check_in = '', datum_check_out = '', zaposleni_id = '', gostje_id = '', hotel_id = '' )
 
 
-@get('/rezerviraj_sobo', methods=['GET', 'POST'])
+@get(url('rezerviraj_sobo'), methods=['GET', 'POST'])
 def rezerviraj_sobo():
     print(request.method)
     #cur = conn.cursor()
@@ -583,7 +583,7 @@ def rezerviraj_sobo():
     return template('rezerviraj_sobo.html', sobe=cur)
 
 
-@get('/rezervacija')
+@get(url('rezervacija'))
 def rezervacija():
    napaka = nastaviSporocilo()
    cur.execute("ROLLBACK")
@@ -605,7 +605,7 @@ def preveriGosta(ime_gosta, priimek_gosta):
     return False
    return True   
 
-@post('/rezervacija')
+@post(url('rezervacija'))
 def rezervacija_post():
    ime_zaposlenega = request.forms.ime_zaposlenega
    priimek_zaposlenega = request.forms.priimek_zaposlenega
@@ -665,7 +665,7 @@ def rezervacija_post():
 ### HOTELSKA STORITEV
 #------------------------------------------------------------------------------------------
 
-@get('/hotelske_storitve')
+@get(url('hotelske_storitve'))
 def hotelske_storitve():
     #cur = conn.cursor()
     cur.execute("ROLLBACK")
@@ -676,12 +676,12 @@ def hotelske_storitve():
     return template('hotelske_storitve.html', hotelske_storitve=cur)
 
 
-@get('/dodaj_storitev')
+@get(url('dodaj_storitev'))
 def dodaj_storitev():
    return template('dodaj_storitev.html',hotelske_storitve_id='',naziv_storitve='',opis_storitve='',cena_storitve='',hotel_id='', napaka=None)
 
 
-@post('/dodaj_storitev')
+@post(url('dodaj_storitev'))
 def dodaj_storitev_post():
    naziv_storitve = request.forms.naziv_storitve
    opis_storitve = request.forms.opis_storitve
@@ -701,11 +701,11 @@ def dodaj_storitev_post():
    conn.rollback()   
    redirect(url('hotelske_storitve'))
 
-@get('/izbrisi_storitev')
+@get(url('izbrisi_storitev'))
 def izbrisi_storitev():
    return template('izbrisi_storitev.html',hotelske_storitve_id='',naziv_storitve='',opis_storitve='',cena_storitve='',hotel_id='', napaka=None)
 
-@post('/izbrisi_storitev')
+@post(url('izbrisi_storitev'))
 def izbrisi_storitev_post():
    nazivstoritve = request.forms.naziv_storitve
    #opis_storitve = request.forms.opis_storitve
@@ -741,7 +741,7 @@ def izbrisi_storitev_post():
 
 ### UPORABLJENE STORITVE
 
-@get('/uporabljene_storitve')
+@get(url('uporabljene_storitve'))
 def uporabljene_storitve():
     #cur = conn.cursor()
     cur.execute("ROLLBACK")
@@ -752,14 +752,14 @@ def uporabljene_storitve():
     cur.fetchone()
     return template('uporabljene_storitve.html', uporabljene_storitve=cur)
 
-@get('/uporabi_storitev')
+@get(url('uporabi_storitev'))
 def uporabi_storitev():
     cur.execute("SELECT hotelske_storitve_id, naziv_storitve FROM hotelske_storitve")
     nazivi = cur.fetchall()
     return template('uporabi_storitev.html', nazivi=nazivi, hotelske_storitve_id='',naziv_storitve='',opis_storitve='',cena_storitve='',hotel_id='', napaka=None)
 
 
-@post('/uporabi_storitev')
+@post(url('uporabi_storitev'))
 def uporabi_storitev_post():
    rezervacije_id = request.forms.rezervacije_id
    hotelske_storitve_id= request.forms.hotelske_storitve_id
