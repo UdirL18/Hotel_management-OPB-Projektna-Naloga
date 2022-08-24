@@ -4,3 +4,4 @@
 
 ## Spletni dostop
 * [![bottle.py](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UdirL18/Hotel_management-OPB-Projektna-Naloga/main?urlpath=proxy/8080/) Aplikacija `bottle.py`
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UdirL18/Hotel_management-OPB-Projektna-Naloga/main?labpath=Hotel_management.py)
