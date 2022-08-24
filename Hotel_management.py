@@ -70,7 +70,7 @@ def preveriUporabnika():
 #-----------------------------------------------
 @get('/')
 def index():
-    return template('prijava.html')
+    return template('prijava.html')    
 
 @get('/dashboard')
 def dashboard():
@@ -193,7 +193,7 @@ def registracija_post():
 
     response.set_cookie('username', username, secret=skrivnost)
     print('vrzem vas na zaposlene')
-    redirect(url('prijava'))
+    redirect(url('prijava_get'))
 
 
 
