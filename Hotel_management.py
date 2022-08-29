@@ -1,8 +1,6 @@
-#uvozimo bottle
-#import sqlite3
-import hashlib
-import os
-#from ctypes import get_last_error
+#  uvozimo potrebne knjižnice
+import hashlib  # za gesla
+import os  # testi, taga načeloma ne rabimo
 from datetime import datetime
 
 # uvozimo psycopg2 - nalozi v ukaznem pozivu pip install psycopg2
@@ -11,8 +9,8 @@ import psycopg2.extensions
 import psycopg2.extras
 
 #uvozimo potrebne podatke za povezavo
-import auth_public as auth
-from bottle import *
+import auth_public as auth  # naša baza
+from bottle import *  # knjižnica, skopirana iz interneta
 from bottleext import *
 
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
@@ -22,10 +20,10 @@ SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
 RELOADER = os.environ.get('BOTTLE_RELOADER', True)
 DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
-#conn_datoteka = 'HotelManagement.db'
 # odkomentiraj, če želiš sporočila o napakah
 debug(True)
-
+#------------------------------------------------------------------------------------
+#  Uporabniku aplokacije izpiše napake, ki jih naredi
 def nastaviSporocilo(sporocilo = None):
     # global napakaSporocilo
     staro = request.get_cookie("sporocilo", secret=skrivnost)
@@ -36,7 +34,7 @@ def nastaviSporocilo(sporocilo = None):
         response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
     return staro
 
-
+#-------------------------------------------------------------------------------------
 # Mapa za statične vire (slike, css, ...)
 static_dir = "./static"
 
@@ -46,27 +44,25 @@ skrivnost = "rODX3ulHw3ZYRdbIVcp1IfJTDn8iQTH6TFaNBgrSkjIulr"
 def static(filename):
     return static_file(filename, root='static')
 
-def preveriUporabnika(): 
-   username = request.get_cookie("username", secret=skrivnost)
-   if username:
-       cur = conn.cursor()    
-       uporabnik = None
-       try: 
-           uporabnik = cur.execute("SELECT * FROM zaposleni WHERE username = %s", (username, )).fetchone()
-       except:
-           uporabnik = None
-       if uporabnik: 
-           return uporabnik
-   redirect(url('prijava'))
+#-------------------------------------------------------------------------------
+# pravzaprav nisva uporabili
+# def preveriUporabnika(): 
+#    username = request.get_cookie("username", secret=skrivnost)
+#    if username:
+#        cur = conn.cursor()    
+#        uporabnik = None
+#        try: 
+#            uporabnik = cur.execute("SELECT * FROM zaposleni WHERE username = %s", (username, )).fetchone()
+#        except:
+#            uporabnik = None
+#        if uporabnik: 
+#            return uporabnik
+#    redirect(url('prijava'))
 
 #------------------------------------------------
-#FUNKCIJE ZA IZGRADNJO STRANI
-# @route("/static/<filename:path>")
-# def static(filename):
-#     return static_file(filename, root=static_dir)
-
+# FUNKCIJE ZA IZGRADNJO STRANI
 #-----------------------------------------------
-#ZAČETNA STRAN
+# ZAČETNA STRAN
 #-----------------------------------------------
 @get('/')
 def index():
@@ -77,10 +73,10 @@ def dashboard():
     return template('dashboard.html', dashboard=cur)
 
 @route('/dashboard')
-def dashboard():
-    cur.execute("ROLLBACK")
-    cur.execute("""SELECT COUNT(*) FROM hotelska_veriga""")
-    vsota = cur.fetchone()
+def dashboard(): # cur je najina baza
+    cur.execute("ROLLBACK") # razveljavi spremembe
+    cur.execute("""SELECT COUNT(*) FROM hotelska_veriga""") # koliko vrstic imamo v tej tabeli
+    vsota = cur.fetchone() # iz html-ja ti pobere podatek
     
     cur.execute("ROLLBACK")
     cur.execute("""SELECT COUNT(*) FROM hotel_podatki""")
@@ -118,7 +114,7 @@ def dashboard():
 # REGISTRACIJA, PRIJAVA, ODJAVA
 #------------------------------------------------
 
-def hashGesla(s):
+def hashGesla(s): # funkcija, ki zakodira gesla - da niso 'vidna' na bazi
     m = hashlib.sha256()
     m.update(s.encode("utf-8"))
     return m.hexdigest()
@@ -135,16 +131,12 @@ def registracija_post():
     password = request.forms.password
     password2 = request.forms.password2
 
-    print(ime, username, password, password2)
+    # print(ime, username, password, password2)
 
     if (ime == '') or (username == '') or (password == '') or (password2 == ''): 
         nastaviSporocilo('Registracija ni možna, ker dobim prazen string.') 
         #redirect('/registracija')
-        redirect(url('registracija_get'))
-        #return None #  brezveze
-    # cur = conn.cursor()     # je že vspostavljen ne rabim še enkrat
-    #uporabnik = None #  to je mal brezveze
-    # try: 
+        redirect(url('registracija_get')) 
     try:
         cur.execute("SELECT * FROM zaposleni WHERE ime = %s", (ime,))
         uporabnik = cur.fetchone()
@@ -155,13 +147,7 @@ def registracija_post():
         nastaviSporocilo('Registracija ni možna, uporabnik ni v bazi.') 
         #redirect('/registracija')
         redirect(url('registracija_get'))
-    #     print(e)
-    #     uporabnik = None
-    # if uporabnik is None:
-    #     nastaviSporocilo('Registracija ni možna, uporabnik ni v bazi.') 
-    #     #redirect('/registracija')
-    #     redirect(url('registracija_get'))
-    #     return
+
     if len(password) < 4:
         nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
         #redirect('/registracija')
@@ -173,11 +159,8 @@ def registracija_post():
         redirect(url('registracija_get'))
 
     zgostitev = hashGesla(password)
-    #cur.execute("UPDATE zaposleni set username = %s, password = %s WHERE ime = %s", (username, zgostitev, ime))
+
     try:
-        # cur.execute("""INSERT INTO zaposleni
-        #             (ime, username, password)
-        #             VALUES (%s, %s, %s)""", (ime, username, zgostitev))
         cur.execute("""UPDATE zaposleni
                         SET
                             username = %s,
@@ -192,10 +175,11 @@ def registracija_post():
         redirect(url('registracija_get'))
 
     response.set_cookie('username', username, secret=skrivnost)
-    print('vrzem vas na zaposlene')
     redirect(url('prijava_get'))
 
-
+#--------------------------------------------------------------
+# PRIJAVA
+#--------------------------------------------------------------
 
 @get('/prijava')
 def prijava_get():
@@ -212,27 +196,43 @@ def prijava_post():
 
 #    cur = conn.cursor()    
 #    hashconn = None
+   cur.execute("SELECT password FROM zaposleni WHERE username = %s", (username, )) 
+   hashconn = cur.fetchone() 
+#    if hashconn == None:
+#         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+#         redirect(url('prijava_get'))
+#    else:
+#         hashconn = hashconn[-1]
+
    try: 
        cur.execute("SELECT password FROM zaposleni WHERE username = %s", (username, ))
        hashconn = cur.fetchone()
+    #    print(hashconn)  # ['']
        hashconn = hashconn[-1]  # ne dodajaj kolon na desno
+    #    print(hashconn)  # brez ['']
    except:
-        conn.rollback()
+        # conn.rollback()
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        redirect(url('prijava'))
+        redirect(url('prijava_get'))
 
    if hashGesla(password) != hashconn:
        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-       redirect(url('prijava'))
+       redirect(url('prijava_get'))
        
 
    response.set_cookie('username', username, secret=skrivnost)
    redirect(url('dashboard'))
+
+#----------------------------------------------------
+# ODJAVA
+#----------------------------------------------------
     
 @get('/odjava')
 def odjava_get():
    response.delete_cookie('username')
    redirect(url('prijava_get'))
+
+
 #-----------------------------------------------------------------------------------------
 # ZAPOSLENI
 #-----------------------------------------------------------------------------------------
@@ -241,6 +241,7 @@ def odjava_get():
 def zaposleni():
     #cur = conn.cursor()
     cur.execute("ROLLBACK")
+    # izpiše tabelo zaposleni
     zaposleni = cur.execute("""SELECT ime,priimek,naziv,oddelek.oddelek_ime,naslov.mesto, naslov.posta, naslov.drzava,hotel_podatki.ime_hotela FROM Zaposleni
             JOIN naslov ON Zaposleni.naslov_id=naslov.naslov_id
             JOIN hotel_podatki ON Zaposleni.hotel_id=hotel_podatki.hotel_id
@@ -249,8 +250,8 @@ def zaposleni():
     cur.fetchone()
     return template('zaposleni.html', zaposleni=cur)
 
-@get('/dodaj_zaposlenega')
-def dodaj_zaposlenega():
+@get('/dodaj_zaposlenega') 
+def dodaj_zaposlenega(): # izpiše obrazec
     cur.execute("SELECT hotel_id, ime_hotela FROM hotel_podatki")
     hoteli = cur.fetchall()
     cur.execute("SELECT oddelek_id, oddelek_ime FROM oddelek")
@@ -259,9 +260,9 @@ def dodaj_zaposlenega():
                     ime='', priimek='', naziv='', telefonska_stevilka='', email='', oddelek_id='',
                     naslov_id='', hotel_id='', username='', password='', napaka=None)
 
+
 @post('/dodaj_zaposlenega')
 def dodaj_zaposlenega_post():
-#    zaposleni_id = request.forms.zaposleni_id
    ime = request.forms.ime
    priimek = request.forms.priimek
    naziv = request.forms.naziv
@@ -272,18 +273,8 @@ def dodaj_zaposlenega_post():
    drzava = request.forms.drzava
    posta = request.forms.posta
    hotel = request.forms.hotel
-#    username = request.forms.username
-#    password = request.forms.password
-#    password2 = hashGesla(password2)
-   print(ime, priimek, naziv, mesto, posta, drzava, telefonska_stevilka, email, oddelek)
+#    print(ime, priimek, naziv, mesto, posta, drzava, telefonska_stevilka, email, oddelek)
    
-#    cur.execute("""INSERT INTO naslov
-#                 (mesto, posta, drzava)
-#                 VALUES (%s, %s, %s)
-#                 RETURNING naslov_id""",
-#                 (mesto, posta, drzava))
-#    conn.commit()
-#    conn.rollback()
 
    try:
       cur.execute("""INSERT INTO naslov 
@@ -312,33 +303,6 @@ def dodaj_zaposlenega_post():
 
       naslov_id, = cur.fetchone()
 
-
-#    cur.execute("""INSERT INTO naslov
-#                 (mesto, posta, drzava)
-#                 VALUES (%s, %s, %s)""", (mesto, posta, drzava))
-#    conn.commit()
-#    conn.rollback()
-
-#    print('insertov sem oddelek')
-
-#    cur.execute("""SELECT naslov_id FROM naslov WHERE mesto = %s """,(mesto,))
-#    naslov_id = cur.fetchall()[0][0]
-
-#    print('v tem hotelu dela')
-#    print(hotel)
-#    cur.execute("""SELECT hotel_id FROM hotel_podatki WHERE ime_hotela = %s """,(hotel,))
-#    hotel_id = cur.fetchall()#[0][0]
-#    print('tale id za hotel:')
-#    print(hotel_id)
-
-
-#    print('na tem oddelku dela')
-#    print(oddelek)
-#    cur.execute("""SELECT oddelek_id FROM oddelek WHERE oddelek_ime = %s """,(oddelek,))
-#    oddelek_id = cur.fetchall()#[0][0]
-#    print('tale id za oddelek:')
-#    print(oddelek_id)   
-
    
    cur.execute("""INSERT INTO zaposleni
                (ime, priimek, naziv, naslov_id, hotel_id, oddelek_id, telefonska_stevilka, email)
@@ -358,19 +322,14 @@ def izbrisi_zaposlenega_post():
 #    zaposleni_id = request.forms.zaposleni_id
    ime = request.forms.ime
    priimek = request.forms.priimek
-#    kreditna_kartica = request.forms.kreditna_kartica
    telefonska_stevilka = request.forms.telefonska_stevilka
-#    email = request.forms.email
-#    mesto = request.forms.mesto
-#    drzava = request.forms.drzava
-#    posta = request.forms.posta
    print(ime, priimek, telefonska_stevilka)
 
    # izbrisati moram tudi vrstico v rezervacijah kjer je id zaposlenega
    cur.execute("""SELECT zaposleni_id FROM zaposleni WHERE (ime, priimek, telefonska_stevilka) = (%s, %s, %s) """,(ime, priimek, telefonska_stevilka))
-   zaposleni_id = cur.fetchall()[0][0]
-   print('tale id za hotel:')
-   print(zaposleni_id)  
+   zaposleni_id = cur.fetchall()[0][0] # [['','',...]]
+#    print('tale id za hotel:')
+#    print(zaposleni_id)  
 
    cur.execute("""DELETE FROM rezervacije
                   WHERE zaposleni_id = %s""", (zaposleni_id,))
@@ -485,18 +444,6 @@ def dodaj_gosta_post():
 
       naslov_id, = cur.fetchone()
 
-#    cur.execute("""SELECT hotel_id FROM hotel_podatki WHERE ime_hotela = %s """,(hotel,))
-#    hotel_id = cur.fetchall()[0][0]
-#    print('tale id za hotel:')
-#    print(hotel_id)
-
-#    cur.execute("""SELECT oddelek_id FROM oddelek WHERE oddelek_ime = %s """,(oddelek,))
-#    oddelek_id = cur.fetchall()[0][0]
-#    print('tale id za oddelek:')
-#    print(oddelek_id)  
-
-   #cur.execute("""SELECT setval('gostje_gostje_id_seq', (SELECT MAX(gostje_id) FROM gostje)+1)""")
-
    
    cur.execute("""INSERT INTO gostje
                (ime, priimek, kreditna_kartica, email, telefonska_stevilka, naslov_id)
@@ -516,13 +463,10 @@ def izbrisi_gosta_post():
 #    zaposleni_id = request.forms.zaposleni_id
    ime = request.forms.ime
    priimek = request.forms.priimek
-#    kreditna_kartica = request.forms.kreditna_kartica
    telefonska_stevilka = request.forms.telefonska_stevilka
-#    email = request.forms.email
-#    mesto = request.forms.mesto
-#    drzava = request.forms.drzava
-#    posta = request.forms.posta
-   print(ime, priimek, telefonska_stevilka)
+
+#    print(ime, priimek, telefonska_stevilka)
+#    print(type(telefonska_stevilka))
 
    # izbrisati moram tudi vrstico v rezervacijah kjer je id gosta
    cur.execute("""SELECT gostje_id FROM gostje WHERE (ime, priimek, telefonska_stevilka) = (%s, %s, %s) """,(ime, priimek, telefonska_stevilka))
@@ -661,7 +605,7 @@ def rezervacija_post():
    conn.rollback()   
    redirect(url('sobe'))
 
-#-----------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------
 ### HOTELSKA STORITEV
 #------------------------------------------------------------------------------------------
 
@@ -715,19 +659,6 @@ def izbrisi_storitev_post():
    print(request.forms.naziv_storitve)
    cur.execute("""SELECT hotelske_storitve_id FROM hotelske_storitve WHERE naziv_storitve = %s""",(nazivstoritve,))
    hotelske_storitve_id = cur.fetchall()[0][0]
-
-
-   #cur.execute("""DELETE FROM Zaposleni WHERE hotel_id = %s""", (hotel_id))
-   #conn.commit()
-   #conn.rollback()
-   
-   #cur.execute("""DELETE FROM sobe WHERE hotel_id = %s""", (hotel_id))
-   #conn.commit()
-   #conn.rollback()
-   
-   #cur.execute("""DELETE FROM rezervacije WHERE hotel_id = %s""", (hotel_id))
-   #conn.commit()
-   #conn.rollback()
 
    cur.execute("""DELETE FROM uporabljene_storitve WHERE hotelske_storitve_id = %s""", (hotelske_storitve_id,))
    conn.commit()
